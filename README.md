@@ -28,7 +28,7 @@ The mesh generation uses the the `blockMesh` utility and `snappyHexMesh`.
 
 The `blockMesh` utility is used to generate the background mesh used for `snappyHexMesh`. A quality background mesh is generated when the following criteria is met:
 - The background mesh must consist purely of hexahedral cells,
-- The hexahedral cell aspect ratio (i.e. the ratio of the longest to the shortest side of a cell) should be approximately 1, at least near the stl surface,
+- The hexahedral cell aspect ratio (i.e. the ratio of the longest to the shortest side of a cell) should be close to 1, at least near the stl surface,
 - There must be at least one intersection of a hexahedral cell edge with the stl surface.
 
 Discuss folder prerequisites
