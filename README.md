@@ -4,6 +4,8 @@
 
 This guide describes a workflow for setting up and executing OpenFOAM studies and uses the simulation of water flow through a header to illustrate the approach. The workflow is comprised of a number of steps discussed individually. The purpose of the study is to evaluate the pressure, the velocity and the temperature patterns developing in the fluid domain for different conditions.
 
+The study consists of two cases `symmetric-velocity-temperature` and `asymmetric-velocity-temperature`. The cases use the same **Geometry** and **Mesh**, but employ different Initial Condition (IC) and Boundary Conditions (BC) for the inlet patches, as presented in the **Model** section.
+
 ## Geometry
 
 The geometry generation must create a smooth, clean and watertight geometry. A watertight geometry means a close body with no holes or overlapping surfaces. The mesh quality and, hence the solution quality, depend on the geometry. The geometry should adequately represent the fluid domain. Geometry defeaturing is used to simplify the geometry to retain only the features important for the fluid phenomena under investigation. The solid modeling application used for the geometry generation is [Onshape](https://www.onshape.com). 
@@ -19,6 +21,22 @@ Fluid Domain Geometry and Dimensions                  |
 <img src="img/geometry.png"> |
 
 ## Mesh
+
+The mesh generation uses the the `blockMesh` utility and `snappyHexMesh`.
+
+### blockMesh
+
+The `blockMesh` utility is used to generate the background mesh used for `snappyHexMesh`. A quality background mesh is generated when the following criteria is met:
+- The background mesh must consist purely of hexahedral cells,
+- The hexahedral cell aspect ratio (i.e. the ration of the longest to the shortest side of a cell) should be approximately 1, at least near the stl surface,
+- There must be at least one intersection of a hexahedral cell edge with the stl surface.
+
+Discuss folder prerequisites
+
+Discuss `system/blockMeshDict` dictionary
+
+
+### snappyHexMesh
 
 
 ## Model
