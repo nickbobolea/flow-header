@@ -16,8 +16,6 @@ The final fluid domain geometry is comprised of 4 surface objects. The surface o
 
 Fluid Domain Geometry and Dimensions                  |
 :----------------------------------------------------:|
-<img src="img/geometry_small.png"> |
-
 <img src="img/geometry.png"> |
 
 ## Mesh
