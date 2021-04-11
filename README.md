@@ -26,7 +26,7 @@ The mesh generation uses `blockMesh` and `snappyHexMesh`.
 
 ### blockMesh
 
-`blockMesh` is used to generate the background mesh used for `snappyHexMesh`. A quality background mesh is generated when the following criteria are met:
+`blockMesh` is used to generate the background mesh for `snappyHexMesh`. A quality background mesh is generated when the following criteria are met:
 - The background mesh must consist purely of hexahedral cells,
 - The cell aspect ratio (i.e. the ratio of the longest to the shortest side of a cell) should be close to 1, at least near the stl surface,
 - The cell size shall be sufficiently small to adequately resolve the smallest geometry feature,
@@ -49,6 +49,40 @@ checkMesh -allGeometry -allTopology | tee log.checkMesh.block
 ```
 
 ### snappyHexMesh
+
+The fluid domain mesh generation with `snappyHexMesh` requires `system/fvSchemes` and `system/fvSolution` dictionary files, which are discussed in the **Solver** section. The mesh generation process is comprised of a number of steps, described below. 
+
+#### Feature Edge Extraction
+
+system/surfaceFeaturesDict
+
+#### Mesh Parameters
+
+snappyHexMeshDict
+
+#### Mesh Quality Parameters
+
+system/meshQualityDict
+
+#### Mesh Partition
+
+system/decomposeParDict
+
+#### Mesh Execution
+
+snappyHexMesh execution
+
+#### Mesh Quality Evaluation
+
+Check snappyHexMesh mesh
+
+#### Mesh Reconstruction
+
+Reconstruct snappyHexMesh mesh
+
+#### Mesh Visualization
+
+Visualize snappyHexMesh mesh with Paraview
 
 
 ## Model
