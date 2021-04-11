@@ -14,27 +14,39 @@ The fluid domain is comprised of two inlet pipes, a common header and an outlet 
 
 The fluid domain geometry is created as a single watertight solid by extruding and sweeping geometry sketches. To facilitate meshing and model development, the solid geometry faces representing patches subsequently used to define fluid boundary conditions (e.g., inlet, outlet) are deleted. After the faces are deleted, the solid geometry becomes a surface geometry. The inlet and outlet patches are recreated as individual surfaces by revolving geometry sketches.
 
-The final fluid domain geometry is comprised of 4 surface objects. The surface objects are exported from Onshape as individual stl files (text format) using the high resolution option. The 4 surface objects, `inlet1.stl`, `inlet2.stl`, `outlet.stl` and `shell.stl`, are saved to the `constant\triSurface` folder. The fluid domain geometry is shown below.
+The final fluid domain geometry is comprised of 4 surface objects. The surface objects are exported from Onshape as individual stl files (text format) using the high resolution option. The 4 surface objects, `inlet1.stl`, `inlet2.stl`, `outlet.stl` and `shell.stl`, are saved to the `constant/triSurface` folder. The fluid domain geometry is shown below.
 
-Fluid Domain Geometry and Dimensions                  |
+Fluid Domain Geometry and Dimensions [m]              |
 :----------------------------------------------------:|
 <img src="img/geometry.png"> |
 
 ## Mesh
 
-The mesh generation uses the the `blockMesh` utility and `snappyHexMesh`.
+The mesh generation uses `blockMesh` and `snappyHexMesh`.
 
 ### blockMesh
 
-The `blockMesh` utility is used to generate the background mesh used for `snappyHexMesh`. A quality background mesh is generated when the following criteria is met:
+`blockMesh` is used to generate the background mesh used for `snappyHexMesh`. A quality background mesh is generated when the following criteria are met:
 - The background mesh must consist purely of hexahedral cells,
-- The hexahedral cell aspect ratio (i.e. the ratio of the longest to the shortest side of a cell) should be close to 1, at least near the stl surface,
-- There must be at least one intersection of a hexahedral cell edge with the stl surface.
+- The cell aspect ratio (i.e. the ratio of the longest to the shortest side of a cell) should be close to 1, at least near the stl surface,
+- The cell size shall be sufficiently small to adequately resolve the smallest geometry feature,
+- There must be at least one intersection of a cell edge with the stl surface.
 
-Discuss folder prerequisites
+`blockMesh` uses the `system/blockMeshDict` dictionary file to generate the mesh. The mesh size is set by variables `xmin`, `xmax`, `ymin`, `ymax`, `zmin` and `zmax` which define a block enclosing the fluid domain geometry. The number of cells along `X`, `Y` and `Z` dimensions is set by variables `xcells`, `ycells` and `zcells` for which selections are made to meet the criteria above.
 
-Discuss `system/blockMeshDict` dictionary
+In addition to the `system/blockMeshDict` dictionary file, `blockMesh` also requires the `system/controlDict` dictionary file. `blockMesh` is executed in the case folder using:
 
+```
+blockMesh | tee log.blockMesh
+```
+
+`blockMesh` execution generates the background hexahedral mesh in `constant/polyMesh` folder and the log file `log.blockMesh` in the case folder. The mesh information is contained in the `constant/polyMesh/boundary`, `constant/polyMesh/faces`, `constant/polyMesh/neighbour`, `constant/polyMesh/owner` and `constant/polyMesh/points` files.
+
+The `blockMesh` mesh quality is assessed using:
+
+```
+checkMesh -allGeometry -allTopology | tee log.checkMesh.block
+```
 
 ### snappyHexMesh
 
