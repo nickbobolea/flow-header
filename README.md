@@ -1,5 +1,3 @@
-# Simulation of Incompressible, Nonisothermal, Buoyant, Turbulent Flow through a Header using OpenFOAM (buoyantPimpleFoam)
-
 ## Introduction
 
 This guide describes a workflow for setting up and executing OpenFOAM studies and uses the simulation of water flow through a header to illustrate the approach. The workflow is comprised of a number of steps discussed individually. The purpose of the study is to evaluate the pressure, the velocity and the temperature patterns developing in the fluid domain for different conditions.
