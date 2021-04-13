@@ -50,7 +50,7 @@ checkMesh -allGeometry -allTopology | tee log.checkMesh.block
 
 The fluid domain mesh generation with `snappyHexMesh` requires `system/fvSchemes` and `system/fvSolution` dictionary files, which are discussed in the **Solver** section. The mesh generation process is comprised of a number of steps, described below. 
 
-#### Feature Edge Extraction
+#### Geometry Edge Extraction
 
 The `surfaceFeatures` utility is used to extract the geometry edges and allow for better meshing with `snappyHexMesh` on these edges. The `system/surfaceFeaturesDict` dictionary file lists the geometry surface (stl) files in the `surfaces` list. The edges marked for extraction are those whose adjacent surfaces normal are at an angle less than the angle specified by `includedAngle` in the `system/surfaceFeaturesDict` dictionary file. The `surfaceFeatures` utility is executed in the case folder using:
 
@@ -61,7 +61,6 @@ surfaceFeatures | tee log.03.surfaceFeatures
 The `surfaceFeatures` utility execution creates the following files for each stl file:
 - A `.eMesh` file in the `constant/triSurface` folder,
 - A `.extendedFeatureEdgeMesh` and a `_edgeMesh.obj` in the `constant/extendedFeatureEdgeMesh` folder.
-
 
 #### Mesh Parameters
 
