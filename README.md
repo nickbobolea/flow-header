@@ -30,7 +30,7 @@ The mesh generation uses `blockMesh` and `snappyHexMesh`.
 - The cell size shall be sufficiently small to adequately resolve the smallest geometry feature,
 - There must be at least one intersection of a cell edge with the stl surface.
 
-`blockMesh` uses the `system/blockMeshDict` dictionary file to generate the mesh. The mesh size is set by variables `xmin`, `xmax`, `ymin`, `ymax`, `zmin` and `zmax` which define a block enclosing the fluid domain geometry. The number of cells along `X`, `Y` and `Z` dimensions is set by variables `xcells`, `ycells` and `zcells` for which selections are made to meet the criteria above.
+`blockMesh` uses the `system/blockMeshDict` dictionary file to generate the mesh. The mesh size is set by variables `xmin`, `xmax`, `ymin`, `ymax`, `zmin` and `zmax` which define a block enclosing the fluid domain geometry. The number of cells along `X`, `Y` and `Z` dimensions is set by variables `xcells`, `ycells` and `zcells` selected such that the criteria above are met. The boundary of the mesh, given in the list named `boundary`, consists of 5 patches `frontandback`, `inlet`, `outlet`, `lowerwall` and, `upperwall`. These patches will be discarded during the mesh generation with `snappyHexMesh` and replaced by the geometry information defined in the `system/snappyHexMeshDict` dictionary file.
 
 In addition to the `system/blockMeshDict` dictionary file, `blockMesh` also requires the `system/controlDict` dictionary file. `blockMesh` is executed in the case folder using:
 

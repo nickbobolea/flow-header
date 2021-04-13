@@ -1,0 +1,57 @@
+### OpenFOAM ###
+
+# Log files
+log.*
+*log
+
+# blockMesh files
+# constant/polyMesh/points*
+# constant/polyMesh/faces*
+# constant/polyMesh/owner*
+# constant/polyMesh/neighbour*
+# constant/polyMesh/boundary*
+# constant/polyMesh/sets
+constant/polyMesh/
+
+# Feature edge files
+constant/triSurface/*.eMesh
+constant/extendedFeatureEdgeMesh/
+
+# Decomposed domain
+processor*
+
+# Timestep directories
+0.*
+[1-9]*
+
+# Fields that must get ignored
+# */phi*
+# */meshPhi*
+
+# Paraview, paraFoam and VTK
+*.foam
+*.OpenFOAM
+*.pvsm
+VTK/
+
+# Zones and levels
+# *Level*
+# *Zone*
+
+# Function objects and post-processing data
+forces/
+postProcessing/
+
+# Needed when C++ code is built using the OpenFOAM library, since it does not
+# use a "normal" build tool (make, cmake, ..).
+# lnInclude
+# *.dep
+# linux*
+# Darwin*
+
+# Exclude important folders and files from the ignore list
+!0/
+!0.orig/
+!system/
+!.gitignore
+

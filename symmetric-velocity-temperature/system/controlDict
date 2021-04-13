@@ -1,0 +1,252 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  8
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     buoyantPimpleFoam;
+
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         10.0;
+
+deltaT          0.0005;
+
+writeControl    runTime;
+
+writeInterval   0.1;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  7;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   6;
+
+graphFormat     gnuplot;
+
+runTimeModifiable true;
+
+adjustTimeStep  no;
+
+maxCo           1.2;
+
+functions
+{
+    residuals
+    {
+        type                    residuals;
+
+        functionObjectLibs      ("libutilityFunctionObjects.so");
+
+        enabled                 true;
+
+        writeControl            timeStep;
+
+        writeInterval           1;
+
+        log                     true;
+
+        fields                  (U epsilon h k p_rgh);
+    }
+
+    minmaxdomain
+    { 
+        type                fieldMinMax;
+
+        functionObjectLibs  ("libfieldFunctionObjects.so");
+
+        enabled             true;
+
+        mode                component;
+
+        writeControl        timeStep;
+
+        writeInterval       1;
+
+        log                 false;
+
+        fields              (p p_rgh U k epsilon T);
+    }
+
+    yplus
+    {
+        type                yPlus;
+
+        functionObjectLibs  ("libutilityFunctionObjects.so");
+
+        enabled             true;
+
+        writeControl        runTime;
+
+        writeInterval       0.2;
+
+        log                 false;
+    }
+
+    inlet1_massflow
+    {
+        type                surfaceFieldValue;
+        
+        functionObjectLibs  ("libfieldFunctionObjects.so");
+        
+        enabled             true;
+
+        writeControl        timeStep;
+
+        writeInterval       1;
+
+        log                 false;
+
+        writeFields         false;
+
+        regionType          patch;
+
+        name                inlet1;
+
+        operation           sum;
+
+        fields              (phi);
+    }
+
+    inlet2_massflow
+    {
+        type                surfaceFieldValue;
+        
+        functionObjectLibs  ("libfieldFunctionObjects.so");
+        
+        enabled             true;
+
+        writeControl        timeStep;
+
+        writeInterval       1;
+
+        log                 false;
+
+        writeFields         false;
+
+        regionType          patch;
+
+        name                inlet2;
+
+        operation           sum;
+
+        fields              (phi);
+    }
+
+    outlet_massflow
+    {
+        type                surfaceFieldValue;
+        
+        functionObjectLibs  ("libfieldFunctionObjects.so");
+        
+        enabled             true;
+
+        writeControl        timeStep;
+
+        writeInterval       1;
+
+        log                 false;
+
+        writeFields         false;
+
+        regionType          patch;
+
+        name                outlet;
+
+        operation           sum;
+
+        fields              (phi);
+    }
+
+    probes_online
+    {
+        type                probes;
+        
+        functionObjectLibs  ("libfieldFunctionObjects.so");
+        
+        enabled             true;
+
+        writeControl        timeStep;
+
+        writeInterval       1;
+
+        log                 false;
+
+        probeLocations      ( (0.5 1.0 -0.9) (2.0 1.0 -0.9)  (1.25 -0.9 0.0) );
+
+        fields              (U p T p_rgh);
+    }
+
+    pressure_drop
+    {
+        type                fieldValueDelta;
+        
+        functionObjectLibs  ("libfieldFunctionObjects.so");
+        
+        enabled             true;
+
+        writeControl        timeStep;
+
+        writeInterval       1;
+
+        log                 false;
+
+        region1
+            {
+                writeFields         false;
+                
+                type                surfaceFieldValue;
+
+                regionType          patch;
+
+                name                inlet1;
+        
+                operation           average;
+
+                fields              (p);
+            }
+
+        region2
+            {
+                writeFields         false;
+                
+                type                surfaceFieldValue;
+
+                regionType          patch;
+
+                name                outlet;
+        
+                operation           average;
+
+                fields              (p);
+            }
+
+        operation subtract;
+
+    }
+
+
+};
+
+// ************************************************************************* //
