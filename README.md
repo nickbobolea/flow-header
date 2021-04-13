@@ -35,7 +35,7 @@ The mesh generation uses `blockMesh` and `snappyHexMesh`.
 In addition to the `system/blockMeshDict` dictionary file, `blockMesh` also requires the `system/controlDict` dictionary file. `blockMesh` is executed in the case folder using:
 
 ```
-blockMesh | tee log.blockMesh
+blockMesh | tee log.01.blockMesh
 ```
 
 `blockMesh` execution generates the background hexahedral mesh in `constant/polyMesh` folder and the log file `log.blockMesh` in the case folder. The mesh information is contained in the `constant/polyMesh/boundary`, `constant/polyMesh/faces`, `constant/polyMesh/neighbour`, `constant/polyMesh/owner` and `constant/polyMesh/points` files.
@@ -43,7 +43,7 @@ blockMesh | tee log.blockMesh
 The `blockMesh` mesh quality is assessed using:
 
 ```
-checkMesh -allGeometry -allTopology | tee log.checkMesh.block
+checkMesh -allGeometry -allTopology | tee log.02.checkMesh.block
 ```
 
 ### snappyHexMesh
