@@ -64,27 +64,79 @@ The `surfaceFeatures` utility execution creates the following files for each stl
 
 #### Mesh Parameters
 
-snappyHexMeshDict
+The `system/snappyHexMeshDict` dictionary file contains the `snappyHexMesh` parameters. The execution of `snappyHexMesh` consists of three steps `castellating`, `snapping` and `layering` which can be enabled or disabled as needed.
+
+The `geometry` dictionary lists the geometry surfaces (stl) files along with their type and user defined name. The user defined name will be used in the **Model** section for the definition of IC and BC. A refinement region, named `refinementBox` is also defined.
+
+The `castellatedMeshControls` dictionary con
+
+In order to , it is convenient to use renumberMesh utility
+
+. The second level is the maximum level of refinement. The `patchInfo` dictionary sets the patch type for each surface as required by the boundary condition types associated with each patch in the IC and BC dictionary files discussed in the **Model** section.
+
+- The `resolveFeatureAngle` setting allows the edges, whose adjacent surfaces normal are at an angle higher than the value set, to be resolved. A lower value for `resolveFeatureAngle` results in a better resolution at sharp edges.
+
+- The `refinementRegions` dictionary contains the volume  based  refinement settings for the `shell` region defined in the `geometry` dictionary. The first number of the `levels` setting represents the distance from the geometry within which all cells are refined while the second number represents the level of refinement.
+
+- The `locationInMesh` setting identifies a location in the final mesh (inside the fluid domain) from which `snappyHexMesh` will mark and keep all connected cells.
+
+The `snapControls` dictionary controls the parameters for mesh refining in the `snapping` step which adapts the castellated mesh to the geometry.
+
+The `addLayersControls` dictionary controls the parameters inserting prismatic cell layers on `shell` surface. The number of layers for the `shell` surface is set by `nSurfaceLayers` to 3. Because the `relativeSizes` is set to `false`, the thickness of the first layer is set by `firstLayerThickness` to 0.004 m. The minimum thickness of any layer is set by `minThickness` to 0.004 m. The increase in size from one layer to the next is set by `expansionRatio` to 1.2.
 
 #### Mesh Quality Parameters
 
-system/meshQualityDict
+The mesh quality for `snappyHexMesh` is controlled by the entries in the `meshQualityControls` dictionary in the `system/snappyHexMeshDict` dictionary file. The `meshQualityControls` dictionary uses an `include` statement to include the mesh quality settings contained in the `system/snappyHexMeshDict`.
 
-#### Mesh Partition
+#### Mesh Decomposition
 
-system/decomposeParDict
+The `decomposePar` utility is used to decompose the mesh into sub-domains, allocated to separate processors, to allow the mesh or solver execution in parallel. The `system/decomposeParDict` dictionary file contains the `decomposePar` utility parameters. The mesh is decomposed into 8 sub-domains by setting `numberOfSubdomains` to 8. The  `method` parameter is used to set the decomposition method to `simple`. For the `simple` method, the `n` parameter in the `simpleCoeffs` dictionary decomposes the mesh into 2 sub-domains along the x, y and z directions, respectively.
+
+The `decomposePar` utility is executed in the case folder using:
+
+```
+decomposePar | tee log.04.decomposePar
+```
+
+The `decomposePar` utility execution creates a `processorX/constant/polyMesh` folder for each processor containing the sub-domain mesh files assigned to that processor.
 
 #### Mesh Execution
 
-snappyHexMesh execution
+The `snappyHexMesh` is executed in parallel in the case folder using:
+
+```
+mpirun -np 8 snappyHexMesh -overwrite -parallel | tee log.05.snappyHexMesh
+```
 
 #### Mesh Quality Evaluation
 
-Check snappyHexMesh mesh
+The `snappyHexMesh` mesh quality is assessed using:
+
+```
+mpirun -np 8 checkMesh -latestTime -allGeometry -allTopology -parallel | tee log.06.checkMesh.snappy
+```
 
 #### Mesh Reconstruction
 
-Reconstruct snappyHexMesh mesh
+The `reconstructParMesh` utility reads the individual processor mesh file and updates the mesh files in the `constant/polyMesh` folder. The `reconstructParMesh` utility is executed in the case folder using:
+
+```
+reconstructParMesh -latestTime -constant | tee log.07.reconstructParMesh
+```
+
+After the `snappyHexMesh` mesh is reconstructed, the individual processor mesh files can be removed using:
+
+```
+rm -rf processor* > /dev/null 2>&1
+```
+
+#### Mesh Optimization
+
+The `renumberMesh` utility is used to reduce bandwidth and speed up computation on the generated mesh. The `renumberMesh` utility is executed in the case folder using:
+
+```
+renumberMesh -overwrite | tee log.08.renumberMesh
+```
 
 #### Mesh Visualization
 
