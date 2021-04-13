@@ -11,18 +11,18 @@ log.*
 # constant/polyMesh/neighbour*
 # constant/polyMesh/boundary*
 # constant/polyMesh/sets
-constant/polyMesh/
+**/constant/polyMesh/
 
 # Feature edge files
-constant/triSurface/*.eMesh
-constant/extendedFeatureEdgeMesh/
+**/constant/triSurface/*.eMesh
+**/constant/extendedFeatureEdgeMesh/
 
 # Decomposed domain
-processor*
+**/processor*
 
 # Timestep directories
-0.*
-[1-9]*
+**/0.*
+**/[1-9]*
 
 # Fields that must get ignored
 # */phi*
@@ -32,15 +32,15 @@ processor*
 *.foam
 *.OpenFOAM
 *.pvsm
-VTK/
+**/VTK/
 
 # Zones and levels
 # *Level*
 # *Zone*
 
 # Function objects and post-processing data
-forces/
-postProcessing/
+**/forces/
+**/postProcessing/
 
 # Needed when C++ code is built using the OpenFOAM library, since it does not
 # use a "normal" build tool (make, cmake, ..).
@@ -50,8 +50,8 @@ postProcessing/
 # Darwin*
 
 # Exclude important folders and files from the ignore list
-!0/
-!0.orig/
-!system/
+!**/0/
+!**/0.orig/
+!**/system/
 !.gitignore
 
