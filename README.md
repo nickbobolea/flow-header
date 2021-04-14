@@ -58,47 +58,45 @@ The `surfaceFeatures` utility is used to extract the geometry edges and allow fo
 surfaceFeatures | tee log.03.surfaceFeatures
 ```
 
-The `surfaceFeatures` utility execution creates the following files for each stl file:
+The execution of `surfaceFeatures` utility creates the following files for each stl file:
 - A `.eMesh` file in the `constant/triSurface` folder,
 - A `.extendedFeatureEdgeMesh` and a `_edgeMesh.obj` in the `constant/extendedFeatureEdgeMesh` folder.
 
 #### Mesh Parameters
 
-The `system/snappyHexMeshDict` dictionary file contains the `snappyHexMesh` parameters. The execution of `snappyHexMesh` consists of three steps `castellating`, `snapping` and `layering` which can be enabled or disabled as needed.
+The `system/snappyHexMeshDict` dictionary file contains the `snappyHexMesh` parameters. The execution of `snappyHexMesh` consists of three steps `castellating`, `snapping` and `layering`. These steps can be enabled or disabled as needed.
 
-The `geometry` dictionary lists the geometry surfaces (stl) files along with their type and user defined name. The user defined name will be used in the **Model** section for the definition of IC and BC. A refinement region, named `refinementBox` is also defined.
+The `geometry` dictionary lists the geometry surfaces (stl) files along with their type and name (user defined). The name is used in the **Model** section for IC and BC. A refinement region, `refinementBox`, is also defined.
 
 The `castellatedMeshControls` dictionary controls the parameters for mesh refining in the `castellating` step.
 
 - The `features` dictionary is used for edge refinement of the `*.eMesh` edges to the desired refinement level.
 
-- The `refinementSurfaces` dictionary is used for surface  based  refinement.  Every  surface  is  specified  with  two  levels. The first level is the minimum level that every cell intersecting the surface gets refined up to. The second level is the maximum level of refinement. The `patchInfo` dictionary sets the patch type for each surface as required by the boundary condition types associated with each patch in the IC and BC dictionary files discussed in the **Model** section.
+- The `refinementSurfaces` dictionary is used for surface  based  refinement.  For each surface, two refinement levels are defined. The first level is the minimum level that every cell intersecting the surface gets refined up to. The second level is the maximum level of refinement. The `patchInfo` dictionary sets the patch type for each surface. The surface patch type must correspond to the associated BC type defined in the IC and BC dictionary files from the **Model** section.
 
-- The `resolveFeatureAngle` setting allows the edges, whose adjacent surfaces normal are at an angle higher than the value set, to be resolved. A lower value for `resolveFeatureAngle` results in a better resolution at sharp edges.
+- The `resolveFeatureAngle` setting allows edges, whose adjacent surfaces normal are at an angle higher than the value set, to be resolved. A lower value for `resolveFeatureAngle` results in a better resolution at sharp edges.
 
-- The `refinementRegions` dictionary contains the volume  based  refinement settings for the `shell` region defined in the `geometry` dictionary. The first number of the `levels` setting represents the distance from the geometry within which all cells are refined while the second number represents the level of refinement.
+- The `refinementRegions` dictionary contains the volume  based  refinement parameters for the `shell` region defined in the `geometry` dictionary. The first number of the `levels` setting represents the distance from the geometry within which all cells are refined while the second number represents the refinement level.
 
 - The `locationInMesh` setting identifies a location in the final mesh (inside the fluid domain) from which `snappyHexMesh` will mark and keep all connected cells.
 
-The `snapControls` dictionary controls the parameters for mesh refining in the `snapping` step which adapts the castellated mesh to the geometry.
+The `snapControls` dictionary controls the parameters for refining the mesh in the `snapping` step. This step adapts the castellated mesh to the geometry.
 
 The `addLayersControls` dictionary controls the parameters inserting prismatic cell layers on `shell` surface. The number of layers for the `shell` surface is set by `nSurfaceLayers` to 3. Because the `relativeSizes` is set to `false`, the thickness of the first layer is set by `firstLayerThickness` to 0.004 m. The minimum thickness of any layer is set by `minThickness` to 0.004 m. The increase in size from one layer to the next is set by `expansionRatio` to 1.2.
 
 #### Mesh Quality Parameters
 
-The mesh quality for `snappyHexMesh` is controlled by the entries in the `meshQualityControls` dictionary in the `system/snappyHexMeshDict` dictionary file. The `meshQualityControls` dictionary uses an `include` statement to include the mesh quality settings contained in the `system/snappyHexMeshDict`.
+The mesh quality for `snappyHexMesh` is controlled by the entries in the `meshQualityControls` dictionary in the `system/snappyHexMeshDict` dictionary file. The `meshQualityControls` dictionary uses an `include` statement to include the mesh quality parameters defined in the `system/meshQualityDict` dictionary file.
 
 #### Mesh Decomposition
 
-The `decomposePar` utility is used to decompose the mesh into sub-domains, allocated to separate processors, to allow the mesh or solver execution in parallel. The `system/decomposeParDict` dictionary file contains the `decomposePar` utility parameters. The mesh is decomposed into 8 sub-domains by setting `numberOfSubdomains` to 8. The  `method` parameter is used to set the decomposition method to `simple`. For the `simple` method, the `n` parameter in the `simpleCoeffs` dictionary decomposes the mesh into 2 sub-domains along the x, y and z directions, respectively.
-
-The `decomposePar` utility is executed in the case folder using:
+The `decomposePar` utility is used to decompose the mesh into sub-domains, allocated to separate processors, to allow for parallel mesh generation or solver execution. The `system/decomposeParDict` dictionary file contains the `decomposePar` utility parameters. The mesh is decomposed into 8 sub-domains by setting `numberOfSubdomains` to 8. The decomposition method is set to `simple` using the `method` parameter. For the `simple` method, the `n` parameter in the `simpleCoeffs` dictionary decomposes the mesh into 2 sub-domains along the x, y and z directions, respectively. The `decomposePar` utility is executed in the case folder using:
 
 ```
 decomposePar | tee log.04.decomposePar
 ```
 
-The `decomposePar` utility execution creates a `processorX/constant/polyMesh` folder for each processor containing the sub-domain mesh files assigned to that processor.
+The execution of `decomposePar` utility creates a `processorX/constant/polyMesh` folder for each processor. The folder contains the sub-domain `blockMesh` mesh assigned to that processor.
 
 #### Mesh Execution
 
@@ -118,13 +116,13 @@ mpirun -np 8 checkMesh -latestTime -allGeometry -allTopology -parallel | tee log
 
 #### Mesh Reconstruction
 
-The `reconstructParMesh` utility reads the individual processor mesh file and updates the mesh files in the `constant/polyMesh` folder. The `reconstructParMesh` utility is executed in the case folder using:
+The `reconstructParMesh` utility reads the sub-domain (processor) `snappyHexMesh` mesh and updates the mesh in the `constant/polyMesh` folder. The `reconstructParMesh` utility is executed in the case folder using:
 
 ```
 reconstructParMesh -latestTime -constant | tee log.07.reconstructParMesh
 ```
 
-After the `snappyHexMesh` mesh is reconstructed, the individual processor mesh files can be removed using:
+After the `snappyHexMesh` mesh is reconstructed, the sub-domain (processor) mesh can be removed using:
 
 ```
 rm -rf processor* > /dev/null 2>&1
