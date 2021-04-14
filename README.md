@@ -68,11 +68,11 @@ The `system/snappyHexMeshDict` dictionary file contains the `snappyHexMesh` para
 
 The `geometry` dictionary lists the geometry surfaces (stl) files along with their type and user defined name. The user defined name will be used in the **Model** section for the definition of IC and BC. A refinement region, named `refinementBox` is also defined.
 
-The `castellatedMeshControls` dictionary con
+The `castellatedMeshControls` dictionary controls the parameters for mesh refining in the `castellating` step.
 
-In order to , it is convenient to use renumberMesh utility
+- The `features` dictionary is used for edge refinement of the `*.eMesh` edges to the desired refinement level.
 
-. The second level is the maximum level of refinement. The `patchInfo` dictionary sets the patch type for each surface as required by the boundary condition types associated with each patch in the IC and BC dictionary files discussed in the **Model** section.
+- The `refinementSurfaces` dictionary is used for surface  based  refinement.  Every  surface  is  specified  with  two  levels. The first level is the minimum level that every cell intersecting the surface gets refined up to. The second level is the maximum level of refinement. The `patchInfo` dictionary sets the patch type for each surface as required by the boundary condition types associated with each patch in the IC and BC dictionary files discussed in the **Model** section.
 
 - The `resolveFeatureAngle` setting allows the edges, whose adjacent surfaces normal are at an angle higher than the value set, to be resolved. A lower value for `resolveFeatureAngle` results in a better resolution at sharp edges.
 
@@ -140,8 +140,11 @@ renumberMesh -overwrite | tee log.08.renumberMesh
 
 #### Mesh Visualization
 
-Visualize snappyHexMesh mesh with Paraview
+The `snappyHexMesh` mesh can be visualized with Paraview using:
 
+```
+paraFoam
+```
 
 ## Model
 
