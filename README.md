@@ -175,7 +175,7 @@ The thermophysical submodels are contained in the `thermoType` dictionary.
 - The transport submodel, `transport`. This model is set to `polynomial` to allow:
     - The calculation of dynamic viscosity, [kg/(m-s)], as function of temperature, [K], based on a polynomial fit,
     - The calculation of thermal conductivity, [W/(m-K)], as function of temperature, [K], based on a polynomial fit.
-- The thermodynamics submodel, `thermo`. This model is set to `hPolynomial` to allow the calculation of specific heat capacity ay constant pressure, [J/(kg-K)], as function of temperature, [K], based on a polynomial fit.
+- The thermodynamics submodel, `thermo`. This model is set to `hPolynomial` to allow the calculation of specific heat capacity at constant pressure, [J/(kg-K)], as function of temperature, [K], based on a polynomial fit.
 - The equation of state submodel, `equationOfState`. This model is set to `icoPolynomial` (incompressible polynomial equation of state) to allow the calculation of density, [kg/m3], as function of temperature, [K], based on a polynomial fit.
 - The specie submodel, `specie`. This model is set to `specie`.
 - The energy submodel, `energy`. This model is set to `sensibleEnthalpy` as the energy formulation used in the solver solution.
@@ -200,13 +200,12 @@ A [Gnuplot script](water-properties/water-properties.plt) is used to calculate t
 ```
 gnuplot water-properties.plt
 ```
-The water property data and the polynomial functions are shown below.
+The [Gnuplot script](water-properties/water-properties.plt) execution generates the water property data and the polynomial functions are shown below.
 
 Water Property Data and Polynomial Functions  |    |
 :--------------------------------------------:|:--:|
 <img src="water-properties/dynamic-viscosity-fit.png"> | <img src="water-properties/thermal-conductivity-fit.png"> |
 <img src="water-properties/specific-heat-capacity-fit.png"> | <img src="water-properties/density-fit.png"> |
-
 
 ### Turbulence Model
 
