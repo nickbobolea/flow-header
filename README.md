@@ -202,8 +202,8 @@ gnuplot water-properties.plt
 ```
 The water property data and the polynomial functions are shown below.
 
-Water Property Data and Polynomial Functions          | |
-:-------------------------------------------------------:|
+Water Property Data and Polynomial Functions  |    |
+:--------------------------------------------:|:--:|
 <img src="water-properties/dynamic-viscosity-fit.png"> | <img src="water-properties/thermal-conductivity-fit.png"> |
 <img src="water-properties/specific-heat-capacity-fit.png"> | <img src="water-properties/density-fit.png"> |
 
