@@ -162,6 +162,8 @@ The study simulates incompressible, nonisothermal, buoyant, turbulent flow of wa
 
 TBD
 
+Discuss the `g` file
+
 ### Thermophysical Models and Data
 
 The `constant/thermophysicalProperties` dictionary file contains the thermophysical model, the thermophysical submodels and the thermophysical properties data.
@@ -171,27 +173,37 @@ The `constant/thermophysicalProperties` dictionary file contains the thermophysi
 The thermophysical model is contained in the `thermoType` dictionary. The thermophysical model is defined by setting the `type` to `heRhoThermo`. The `heRhoThermo` thermophysical model calculations are based on enthalpy and density.
 
 The thermophysical submodels are contained in the `thermoType` dictionary.
-- The mixture submodel, `mixture`. This model is set to `pureMixture` because the fluid is a single specie (i.e. water).
-- The transport submodel, `transport`. This model is set to `polynomial` to allow:
-    - The calculation of dynamic viscosity, [kg/(m-s)], as function of temperature, [K], based on a polynomial fit,
-    - The calculation of thermal conductivity, [W/(m-K)], as function of temperature, [K], based on a polynomial fit.
-- The thermodynamics submodel, `thermo`. This model is set to `hPolynomial` to allow the calculation of specific heat capacity at constant pressure, [J/(kg-K)], as function of temperature, [K], based on a polynomial fit.
-- The equation of state submodel, `equationOfState`. This model is set to `icoPolynomial` (incompressible polynomial equation of state) to allow the calculation of density, [kg/m3], as function of temperature, [K], based on a polynomial fit.
-- The specie submodel, `specie`. This model is set to `specie`.
-- The energy submodel, `energy`. This model is set to `sensibleEnthalpy` as the energy formulation used in the solver solution.
+
+The mixture submodel, `mixture`. This model is set to `pureMixture` because the fluid is a single specie (i.e. water).
+
+The transport submodel, `transport`. This model is set to `polynomial` to allow:
+- The calculation of dynamic viscosity, [kg/(m-s)], as function of temperature, [K], based on a polynomial fit,
+- The calculation of thermal conductivity, [W/(m-K)], as function of temperature, [K], based on a polynomial fit.
+
+The thermodynamics submodel, `thermo`. This model is set to `hPolynomial` to allow the calculation of specific heat capacity at constant pressure, [J/(kg-K)], as function of temperature, [K], based on a polynomial fit.
+
+The equation of state submodel, `equationOfState`. This model is set to `icoPolynomial` (incompressible polynomial equation of state) to allow the calculation of density, [kg/m3], as function of temperature, [K], based on a polynomial fit.
+
+The specie submodel, `specie`. This model is set to `specie`.
+
+The energy submodel, `energy`. This model is set to `sensibleEnthalpy` as the energy formulation used in the solver solution.
 
 #### Thermophysical Properties Data
 
 The thermophysical properties data for the thermophysical submodels is contained in the specie dictionary named `water`.
-- The `specie` sub-dictionary contains the molecular composition for each mixture constituent. As the mixture submodel is set to `pureMixture`, the `specie` dictionary contains only the water molecular weight, `molWeight`, [g/mol].
-- The `transport` sub-dictionary contains:
-    - The cubic polynomial fit coefficients for dynamic viscosity, `muCoeffs`, as function of temperature,
-    - The cubic polynomial fit polynomial fit coefficients for thermal conductivity, `kappaCoeffs`, as function of temperature.
-- The `thermodynamics` sub-dictionary contains:
-    - The cubic polynomial fit coefficients for specific heat capacity at constant pressure, `CpCoeffs`, as function of temperature,
-    - The standard entropy, `Sf`, [J/(kg-K)],
-    - The heat of formation, `Hf`, [J/kg].
-- The `equationOfState` sub-dictionary contains the cubic polynomial fit coefficients for density, `rhoCoeffs`, as function of temperature.
+
+The `specie` sub-dictionary contains the molecular composition for each mixture constituent. As the mixture submodel is set to `pureMixture`, the `specie` dictionary contains only the water molecular weight, `molWeight`, [g/mol].
+
+The `transport` sub-dictionary contains:
+- The cubic polynomial fit coefficients for dynamic viscosity, `muCoeffs`, as function of temperature,
+- The cubic polynomial fit polynomial fit coefficients for thermal conductivity, `kappaCoeffs`, as function of temperature.
+
+The `thermodynamics` sub-dictionary contains:
+- The cubic polynomial fit coefficients for specific heat capacity at constant pressure, `CpCoeffs`, as function of temperature,
+- The standard entropy, `Sf`, [J/(kg-K)],
+- The heat of formation, `Hf`, [J/kg].
+
+The `equationOfState` sub-dictionary contains the cubic polynomial fit coefficients for density, `rhoCoeffs`, as function of temperature.
 
 The dynamic viscosity, thermal conductivity, specific heat capacity and density as function of temperature are calculated based on the water property data at atmospheric pressure of 101325 Pa and temperature between 0 and 95 degrees C (273.15 and 368.15 degrees K) from [IAPWS R7-97(2012)](http://www.iapws.org/relguide/IF97-Rev.html) contained in the [water property data file](water-properties/water-properties.dat).
 
@@ -219,7 +231,7 @@ The `system/controlDict` dictionary file contains instructions for the case exec
 
 ### Numerical Scheme
 
-The `system/fvSchemes` dictionary file contains instructions for the discretization schemes that will be used for the different terms in the equations.
+The `system/fvSchemes` dictionary file contains instructions for the discretization schemes that are used for the different terms in the equations.
 
 ### Solution and Algorithm Control
 
