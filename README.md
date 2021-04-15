@@ -160,7 +160,7 @@ The study simulates incompressible, nonisothermal, buoyant, turbulent flow of wa
 
 ### Initial Condition (IC) and Boundary Conditions (BC)
 
-
+TBD
 
 ### Thermophysical Models and Data
 
@@ -193,14 +193,19 @@ The thermophysical properties data for the thermophysical submodels is contained
     - The heat of formation, `Hf`, [J/kg].
 - The `equationOfState` sub-dictionary contains the cubic polynomial fit coefficients for density, `rhoCoeffs`, as function of temperature.
 
-The polynomial fit coefficients for dynamic viscosity, thermal conductivity, specific heat capacity at constant pressure and density as function of temperature are calculated based on the [water property data](water-properties/water-properties.dat) at atmospheric pressure of 101325 Pa and temperature between 0 and 95 degrees C (273.15 and 368.15 degrees K) from [IAPWS R7-97(2012)](http://www.iapws.org/relguide/IF97-Rev.html). The water property data is contained in the `water-properties.dat` file.
+The dynamic viscosity, thermal conductivity, specific heat capacity and density as function of temperature are calculated based on the water property data at atmospheric pressure of 101325 Pa and temperature between 0 and 95 degrees C (273.15 and 368.15 degrees K) from [IAPWS R7-97(2012)](http://www.iapws.org/relguide/IF97-Rev.html) contained in the [water property data file](water-properties/water-properties.dat).
 
+A [Gnuplot script](water-properties/water-properties.plt) is used to calculate the polynomial fit coefficients for dynamic viscosity, thermal conductivity, specific heat capacity and density as function of temperature. The [Gnuplot script](water-properties/water-properties.plt) is executed in the `water-properties` folder using:
 
+```
+gnuplot water-properties.plt
+```
+The water property data and the polynomial functions are shown below.
 
-
-
-
-
+Water Property Data and Polynomial Functions          |
+:-------------------------------------------------------:|
+<img src="water-properties/dynamic-viscosity-fit.png"> | <img src="water-properties/thermal-conductivity-fit.png">
+<img src="water-properties/specific-heat-capacity-fit.png"> | <img src="water-properties/density-fit.png"> 
 
 
 ### Turbulence Model
