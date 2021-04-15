@@ -210,7 +210,7 @@ A [Gnuplot script](water-properties/water-properties.plt) is used to calculate t
 ```
 gnuplot water-properties.plt
 ```
-The [Gnuplot script](water-properties/water-properties.plt) execution generates the water property data and the polynomial functions are shown below.
+The [Gnuplot script](water-properties/water-properties.plt) execution generates the water property polynomial functions shown below.
 
 Water Property Data and Polynomial Functions  |                                              |
 :--------------------------------------------:|:--------------------------------------------:|
