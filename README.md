@@ -1,8 +1,18 @@
 ## Introduction
 
+### Purpose
+
 This guide describes a workflow for setting up and executing OpenFOAM studies and uses the simulation of water flow through a header to illustrate the approach. The workflow is comprised of a number of steps discussed individually. The purpose of the study is to evaluate the pressure, the velocity and the temperature patterns developing in the fluid domain for different conditions.
 
 The study consists of two cases `symmetric-velocity-temperature` and `asymmetric-velocity-temperature`. The cases use the same **Geometry** and **Mesh**, but employ different Initial Condition (IC) and Boundary Conditions (BC) for the inlet patches, as presented in the **Model** section.
+
+### Platform
+
+This study is executed on a desktop workstation with the following configuration:
+- CPU (*lscpu*): AMD Ryzen 7 1800X Eight-Core Processor
+- OS (*uname -a*): Linux nick-AX370-Gaming 5.4.0-26-generic #30-Ubuntu SMP Mon Apr 20 16:58:30 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+- OpenFOAM: Version 8, Build 8-1c9b5879390b
+- Gnuplot (*gnuplot -V*): gnuplot 5.2 patchlevel 8
 
 ## Geometry
 
@@ -74,11 +84,11 @@ The `castellatedMeshControls` dictionary controls the parameters for mesh refini
 
 - The `refinementSurfaces` dictionary is used for surface  based  refinement.  For each surface, two refinement levels are defined. The first level is the minimum level that every cell intersecting the surface gets refined up to. The second level is the maximum level of refinement. The `patchInfo` dictionary sets the patch type for each surface. The surface patch type must correspond to the associated BC type defined in the IC and BC dictionary files from the **Model** section.
 
-- The `resolveFeatureAngle` setting allows edges, whose adjacent surfaces normal are at an angle higher than the value set, to be resolved. A lower value for `resolveFeatureAngle` results in a better resolution at sharp edges.
+- The `resolveFeatureAngle` parameter allows edges, whose adjacent surfaces normal are at an angle higher than the value set, to be resolved. A lower value for `resolveFeatureAngle` results in a better resolution at sharp edges.
 
-- The `refinementRegions` dictionary contains the volume  based  refinement parameters for the `shell` region defined in the `geometry` dictionary. The first number of the `levels` setting represents the distance from the geometry within which all cells are refined while the second number represents the refinement level.
+- The `refinementRegions` dictionary contains the volume  based  refinement parameters for the `shell` region defined in the `geometry` dictionary. The first number of the `levels` parameter represents the distance from the geometry within which all cells are refined while the second number represents the refinement level.
 
-- The `locationInMesh` setting identifies a location in the final mesh (inside the fluid domain) from which `snappyHexMesh` will mark and keep all connected cells.
+- The `locationInMesh` parameter identifies a location in the final mesh (inside the fluid domain) from which `snappyHexMesh` will mark and keep all connected cells.
 
 The `snapControls` dictionary controls the parameters for refining the mesh in the `snapping` step. This step adapts the castellated mesh to the geometry.
 
@@ -146,8 +156,70 @@ paraFoam
 
 ## Model
 
+The study simulates incompressible, nonisothermal, buoyant, turbulent flow of water through a header using the buoyantPimpleFoam OpenFOAM solver. 
+
+### Initial Condition (IC) and Boundary Conditions (BC)
+
+
+
+### Thermophysical Models and Data
+
+The `constant/thermophysicalProperties` dictionary file contains the thermophysical model, the thermophysical submodels and the thermophysical properties data.
+
+#### Thermophysical Models
+
+The thermophysical model is contained in the `thermoType` dictionary. The thermophysical model is defined by setting the `type` to `heRhoThermo`. The `heRhoThermo` thermophysical model calculations are based on enthalpy and density.
+
+The thermophysical submodels are contained in the `thermoType` dictionary.
+- The mixture submodel, `mixture`. This model is set to `pureMixture` because the fluid is a single specie (i.e. water).
+- The transport submodel, `transport`. This model is set to `polynomial` to allow:
+    - The calculation of dynamic viscosity, [kg/(m-s)], as function of temperature, [K], based on a polynomial fit,
+    - The calculation of thermal conductivity, [W/(m-K)], as function of temperature, [K], based on a polynomial fit.
+- The thermodynamics submodel, `thermo`. This model is set to `hPolynomial` to allow the calculation of specific heat capacity ay constant pressure, [J/(kg-K)], as function of temperature, [K], based on a polynomial fit.
+- The equation of state submodel, `equationOfState`. This model is set to `icoPolynomial` (incompressible polynomial equation of state) to allow the calculation of density, [kg/m3], as function of temperature, [K], based on a polynomial fit.
+- The specie submodel, `specie`. This model is set to `specie`.
+- The energy submodel, `energy`. This model is set to `sensibleEnthalpy` as the energy formulation used in the solver solution.
+
+#### Thermophysical Properties Data
+
+The thermophysical properties data for the thermophysical submodels is contained in the specie dictionary named `water`.
+- The `specie` sub-dictionary contains the molecular composition for each mixture constituent. As the mixture submodel is set to `pureMixture`, the `specie` dictionary contains only the water molecular weight, `molWeight`, [g/mol].
+- The `transport` sub-dictionary contains:
+    - The cubic polynomial fit coefficients for dynamic viscosity, `muCoeffs`, as function of temperature,
+    - The cubic polynomial fit polynomial fit coefficients for thermal conductivity, `kappaCoeffs`, as function of temperature.
+- The `thermodynamics` sub-dictionary contains:
+    - The cubic polynomial fit coefficients for specific heat capacity at constant pressure, `CpCoeffs`, as function of temperature,
+    - The standard entropy, `Sf`, [J/(kg-K)],
+    - The heat of formation, `Hf`, [J/kg].
+- The `equationOfState` sub-dictionary contains the cubic polynomial fit coefficients for density, `rhoCoeffs`, as function of temperature.
+
+The polynomial fit coefficients for dynamic viscosity, thermal conductivity, specific heat capacity at constant pressure and density as function of temperature are calculated based on the [water property data](water-properties/water-properties.dat) at atmospheric pressure of 101325 Pa and temperature between 0 and 95 degrees C (273.15 and 368.15 degrees K) from [IAPWS R7-97(2012)](http://www.iapws.org/relguide/IF97-Rev.html). The water property data is contained in the `water-properties.dat` file.
+
+
+
+
+
+
+
+
+
+### Turbulence Model
+
+The `constant/momentumTransport` dictionary file uses turbulence modelling based on the Reynolds-averaged stress (RAS) by setting `simulationType` to `RAS`. The `RAS` dictionary is used to select and enable the k-epsilon turbulence model by setting `model` to `kEpsilon` and `turbulence` to `on`, respectively. The k-epsilon model coefficients are printed to the terminal at simulation start by setting `printCoeffs` to `on`.
 
 ## Solver
+
+### Runtime Control
+
+The `system/controlDict` dictionary file contains instructions for the case execution.
+
+### Numerical Scheme
+
+The `system/fvSchemes` dictionary file contains instructions for the discretization schemes that will be used for the different terms in the equations.
+
+### Solution and Algorithm Control
+
+The `system/fvSolution` dictionary file contains the equation solvers, tolerances and algorithms.  
 
 
 ## Execution
