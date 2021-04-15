@@ -170,23 +170,21 @@ The `constant/thermophysicalProperties` dictionary file contains the thermophysi
 
 #### Thermophysical Models
 
-The thermophysical model is contained in the `thermoType` dictionary. The thermophysical model is defined by setting the `type` to `heRhoThermo`. The `heRhoThermo` thermophysical model calculations are based on enthalpy and density.
+The thermophysical model is contained in the `thermoType` dictionary. The thermophysical model is defined by setting the `type` to `heRhoThermo`. The `heRhoThermo` thermophysical model calculations are based on enthalpy and density. The thermophysical submodels are contained in the `thermoType` dictionary.
 
-The thermophysical submodels are contained in the `thermoType` dictionary.
+The mixture submodel, `mixture`, is set to `pureMixture` because the fluid is a single specie (i.e. water).
 
-The mixture submodel, `mixture`. This model is set to `pureMixture` because the fluid is a single specie (i.e. water).
-
-The transport submodel, `transport`. This model is set to `polynomial` to allow:
+The transport submodel, `transport`, is set to `polynomial` to allow:
 - The calculation of dynamic viscosity, [kg/(m-s)], as function of temperature, [K], based on a polynomial fit,
 - The calculation of thermal conductivity, [W/(m-K)], as function of temperature, [K], based on a polynomial fit.
 
-The thermodynamics submodel, `thermo`. This model is set to `hPolynomial` to allow the calculation of specific heat capacity at constant pressure, [J/(kg-K)], as function of temperature, [K], based on a polynomial fit.
+The thermodynamics submodel, `thermo`, is set to `hPolynomial` to allow the calculation of specific heat capacity at constant pressure, [J/(kg-K)], as function of temperature, [K], based on a polynomial fit.
 
-The equation of state submodel, `equationOfState`. This model is set to `icoPolynomial` (incompressible polynomial equation of state) to allow the calculation of density, [kg/m3], as function of temperature, [K], based on a polynomial fit.
+The equation of state submodel, `equationOfState`, is set to `icoPolynomial` (incompressible polynomial equation of state) to allow the calculation of density, [kg/m3], as function of temperature, [K], based on a polynomial fit.
 
-The specie submodel, `specie`. This model is set to `specie`.
+The specie submodel, `specie`, is set to `specie`.
 
-The energy submodel, `energy`. This model is set to `sensibleEnthalpy` as the energy formulation used in the solver solution.
+The energy submodel, `energy`, is set to `sensibleEnthalpy` as the energy formulation used in the solver solution.
 
 #### Thermophysical Properties Data
 
