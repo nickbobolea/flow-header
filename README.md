@@ -160,7 +160,7 @@ The study simulates incompressible, nonisothermal, buoyant, turbulent flow of wa
 
 ### Initial Condition (IC) and Boundary Conditions (BC)
 
-The Initial Condition (IC) and Boundary Conditions (BC) are contained in the `0.orig` folder as individual disctionary files for each field.
+The Initial Condition (IC) and Boundary Conditions (BC) are contained in the `0.orig` folder as individual dictionary files for each field.
 
 Discuss the `g` file
 
