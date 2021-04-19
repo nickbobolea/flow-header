@@ -188,7 +188,7 @@ The boundary condition type for `inlet1`, `inlet2` and `shell` is set to `zeroGr
 
 The IC and BC for the temperature field, [K], are contained in the `0.orig/T` dictionary file. The fluid domain initial temperature is set by the `internalField` keyword to a uniform value of 300 K.
 
-The boundary condition type for `outlet` and `shell` is set to `zeroGradient`. The boundary condition type for `inlet1` and `inlet2` is set to `fixedValue` hich defines a constant inlet temperature whose magnitude is case specific.
+The boundary condition type for `outlet` and `shell` is set to `zeroGradient`. The boundary condition type for `inlet1` and `inlet2` is set to `fixedValue` which defines a constant inlet temperature whose magnitude is case specific.
 
 #### Turbulent Thermal Diffusivity
 
