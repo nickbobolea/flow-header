@@ -162,6 +162,44 @@ The study simulates incompressible, nonisothermal, buoyant, turbulent flow of wa
 
 The Initial Condition (IC) and Boundary Conditions (BC) are contained in the `0.orig` folder as individual dictionary files for each field.
 
+#### Velocity
+
+The IC and BC for the velocity field, [m/s], are contained in the `0.orig/U` dictionary file. The fluid domain initial velocity is set by the `internalField` keyword to a uniform value of 0 m/s.
+
+`inlet1` and `inlet2` are defined as patch type `patch` in the `refinementSurfaces` sub-dictionary of `system/snappyHexMeshDict` dictionary file. The boundary condition type is set to `fixedValue` which defines a constant inlet uniform velocity whose magnitude is case specific.
+
+`outlet` is defined as patch type `patch` in the `refinementSurfaces` sub-dictionary of `system/snappyHexMeshDict` dictionary file. The boundary condition type is set to `pressureInletOutletVelocity` which defines a zero-gradient condition for flow out the fluid domain.
+
+`shell` is defined as patch type `wall` in the `refinementSurfaces` sub-dictionary of `system/snappyHexMeshDict` dictionary file. The boundary condition type is set to `fixedValue` of 0 m/s.
+
+#### Pressure
+
+The IC and BC for the pressure field, [Pa], are contained in the `0.orig/p` dictionary file. The fluid domain initial pressure is set by the `internalField` keyword to a uniform value of 0 Pa.
+
+The boundary condition type for `inlet1`, `inlet2` and `shell` is set to `zeroGradient`. The boundary condition type for `outlet` is set to `totalPressure` and the pressure magnitude is set by the `p0` keyword.
+
+#### Pseudo Hydrostatic Pressure
+
+The IC and BC for the pseudo hydrostatic pressure field, [Pa], are contained in the `0.orig/p_rgh` dictionary file. The fluid domain initial pseudo hydrostatic pressure is set by the `internalField` keyword to a uniform value of 0 Pa.
+
+The boundary condition type for `inlet1`, `inlet2` and `shell` is set to `zeroGradient`. The boundary condition type for `outlet` is set to `prghTotalPressure` and the pseudo hydrostatic pressure magnitude is set by the `p0` keyword.
+
+#### Temperature
+
+The IC and BC for the temperature field, [K], are contained in the `0.orig/T` dictionary file. The fluid domain initial temperature is set by the `internalField` keyword to a uniform value of 300 K.
+
+The boundary condition type for `outlet` and `shell` is set to `zeroGradient`. The boundary condition type for `inlet1` and `inlet2` is set to `fixedValue` hich defines a constant inlet temperature whose magnitude is case specific.
+
+#### Turbulent Thermal Diffusivity
+
+The IC and BC for the turbulent thermal diffusivity field, [kg/(m-s)], are contained in the `0.orig/alphat` dictionary file. The fluid domain initial turbulent thermal diffusivity is set by the `internalField` keyword to a uniform value of 0 [kg/(m-s)].
+
+The boundary condition type for `inlet1`, `inlet2` and `outlet` is set to `calculated`. The boundary condition type for `shell` is set to `compressible::alphatJayatillekeWallFunction` which provides 
+a thermal wall function for turbulent thermal diffusivity based on the Jayatilleke model.
+
+
+
+
 Discuss the `g` file
 
 ### Thermophysical Models and Data
@@ -238,6 +276,7 @@ The `system/fvSolution` dictionary file contains the equation solvers, tolerance
 
 ## Execution
 
+The `0.orig` folder is copied to `0` folder.
 
 ## Results
 
