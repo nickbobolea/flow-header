@@ -167,7 +167,7 @@ The ICs and BCs for the velocity field, [m/s], are contained in the `0.orig/U` d
 
 `inlet1` and `inlet2` are defined as patch type `patch` in the `refinementSurfaces` sub-dictionary of `system/snappyHexMeshDict` dictionary file. The boundary condition type is set to `fixedValue` which defines a constant inlet uniform velocity as presented in [*Table 1*](#Table-1---Velocity-Boundary-Conditions).
 
-#### *Table 1 - Velocity Boundary Conditions*
+##### *Table 1 - Velocity Boundary Conditions*
 
 Case                             | `inlet1` Velocity [m/s] | `inlet2` Velocity [m/s] |
 :-------------------------------:|:-----------------------:|:-----------------------:|
@@ -196,7 +196,7 @@ The ICs and BCs for the temperature field, [K], are contained in the `0.orig/T` 
 
 The boundary condition type for `outlet` and `shell` is set to `zeroGradient`. The boundary condition type for `inlet1` and `inlet2` is set to `fixedValue` which defines a constant inlet temperature as presented in [*Table 2*](#Table-2---Temperature-Boundary-Conditions).
 
-#### *Table 2 - Temperature Boundary Conditions*
+##### *Table 2 - Temperature Boundary Conditions*
 
 Case                             | `inlet1` Temperature [K] | `inlet2` Temperature [K] |
 :-------------------------------:|:------------------------:|:------------------------:|
@@ -288,7 +288,7 @@ gnuplot water-properties.plt
 ```
 The [Gnuplot script](water-properties/water-properties.plt) execution generates the water property polynomial functions presented in [*Table 3*](#Table-3---Water-Property-Data-and-Polynomial-Functions).
 
-#### *Table 3 - Water Property Data and Polynomial Functions*
+##### *Table 3 - Water Property Data and Polynomial Functions*
 Dynamic Viscosity and Specific Heat Capacity  |  Thermal Conductivity and Density            |
 :--------------------------------------------:|:--------------------------------------------:|
 <img src="water-properties/dynamic-viscosity-fit.png"> | <img src="water-properties/thermal-conductivity-fit.png"> |
