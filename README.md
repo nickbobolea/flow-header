@@ -4,7 +4,7 @@
 
 This guide describes a workflow for setting up and executing OpenFOAM studies and uses the simulation of water flow through a header to illustrate the approach. The workflow is comprised of a number of steps discussed individually. The purpose of the study is to evaluate the pressure, the velocity and the temperature patterns developing in the fluid domain for different conditions.
 
-The study consists of two cases `symmetric-velocity-temperature` and `asymmetric-velocity-temperature`. The cases use the same **Geometry** and **Mesh**, but employ different Initial Condition (IC) and Boundary Conditions (BC) for the inlet patches, as presented in the **Model** section.
+The study consists of two cases `symmetric-velocity-temperature` and `asymmetric-velocity-temperature`. The cases use the same [**Geometry**](#Geometry) and [**Mesh**](#Mesh), but employ different Initial Conditions (IC) and Boundary Conditions (BC) for the inlet patches, as presented in the [**Model**](#Model) section.
 
 ### Platform
 
@@ -22,11 +22,10 @@ The fluid domain is comprised of two inlet pipes, a common header and an outlet 
 
 The fluid domain geometry is created as a single watertight solid by extruding and sweeping geometry sketches. To facilitate meshing and model development, the solid geometry faces representing patches subsequently used to define fluid boundary conditions (e.g., inlet, outlet) are deleted. After the faces are deleted, the solid geometry becomes a surface geometry. The inlet and outlet patches are recreated as individual surfaces by revolving geometry sketches.
 
-The final fluid domain geometry is comprised of 4 surface objects. The surface objects are exported from Onshape as individual stl files (text format) using the high resolution option. The 4 surface objects, `inlet1.stl`, `inlet2.stl`, `outlet.stl` and `shell.stl`, are saved to the `constant/triSurface` folder. The fluid domain geometry is shown below.
+The final fluid domain geometry is comprised of 4 surface objects. The surface objects are exported from Onshape as individual stl files (text format) using the high resolution option. The 4 surface objects, `inlet1.stl`, `inlet2.stl`, `outlet.stl` and `shell.stl`, are saved to the `constant/triSurface` folder. The fluid domain geometry, in meters, is shown in [**Figure 1**](#Figure-1:-Fluid-Domain-Geometry-and-Dimensions).
 
-Fluid Domain Geometry and Dimensions [m]              |
-:----------------------------------------------------:|
-<img src="img/geometry.png"> |
+Figure 1: Fluid Domain Geometry and Dimensions
+<img src="img/geometry.png">
 
 ## Mesh
 
@@ -58,7 +57,7 @@ checkMesh -allGeometry -allTopology | tee log.02.checkMesh.block
 
 ### snappyHexMesh
 
-The fluid domain mesh generation with `snappyHexMesh` requires `system/fvSchemes` and `system/fvSolution` dictionary files, which are discussed in the **Solver** section. The mesh generation process is comprised of a number of steps, described below. 
+The fluid domain mesh generation with `snappyHexMesh` requires `system/fvSchemes` and `system/fvSolution` dictionary files, which are discussed in the [**Solver**](#Solver) section. The mesh generation process is comprised of a number of steps, described below. 
 
 #### Geometry Edge Extraction
 
@@ -76,13 +75,13 @@ The execution of `surfaceFeatures` utility creates the following files for each 
 
 The `system/snappyHexMeshDict` dictionary file contains the `snappyHexMesh` parameters. The execution of `snappyHexMesh` consists of three steps `castellating`, `snapping` and `layering`. These steps can be enabled or disabled as needed.
 
-The `geometry` dictionary lists the geometry surfaces (stl) files along with their type and name (user defined). The name is used in the **Model** section for IC and BC. A refinement region, `refinementBox`, is also defined.
+The `geometry` dictionary lists the geometry surfaces (stl) files along with their type and name (user defined). The name is used in the [**Model**](#Model) section for IC and BC. A refinement region, `refinementBox`, is also defined.
 
 The `castellatedMeshControls` dictionary controls the parameters for mesh refining in the `castellating` step.
 
 - The `features` dictionary is used for edge refinement of the `*.eMesh` edges to the desired refinement level.
 
-- The `refinementSurfaces` dictionary is used for surface  based  refinement.  For each surface, two refinement levels are defined. The first level is the minimum level that every cell intersecting the surface gets refined up to. The second level is the maximum level of refinement. The `patchInfo` dictionary sets the patch type for each surface. The surface patch type must correspond to the associated BC type defined in the IC and BC dictionary files from the **Model** section.
+- The `refinementSurfaces` dictionary is used for surface  based  refinement.  For each surface, two refinement levels are defined. The first level is the minimum level that every cell intersecting the surface gets refined up to. The second level is the maximum level of refinement. The `patchInfo` dictionary sets the patch type for each surface. The surface patch type must correspond to the associated BC type defined in the IC and BC dictionary files from the [**Model**](#Model) section.
 
 - The `resolveFeatureAngle` parameter allows edges, whose adjacent surfaces normal are at an angle higher than the value set, to be resolved. A lower value for `resolveFeatureAngle` results in a better resolution at sharp edges.
 
@@ -158,15 +157,22 @@ paraFoam
 
 The study simulates incompressible, nonisothermal, buoyant, turbulent flow of water through a header using the buoyantPimpleFoam OpenFOAM solver. 
 
-### Initial Condition (IC) and Boundary Conditions (BC)
+### Initial Conditions (ICs) and Boundary Conditions (BCs)
 
-The Initial Condition (IC) and Boundary Conditions (BC) are contained in the `0.orig` folder as individual dictionary files for each field.
+The Initial Conditions (ICs) and Boundary Conditions (BCs) are contained in the `0.orig` folder as individual dictionary files for each field.
 
 #### Velocity
 
-The IC and BC for the velocity field, [m/s], are contained in the `0.orig/U` dictionary file. The fluid domain initial velocity is set by the `internalField` keyword to a uniform value of 0 m/s.
+The ICs and BCs for the velocity field, [m/s], are contained in the `0.orig/U` dictionary file. The fluid domain initial velocity is set by the `internalField` keyword to a uniform value of 0 m/s.
 
-`inlet1` and `inlet2` are defined as patch type `patch` in the `refinementSurfaces` sub-dictionary of `system/snappyHexMeshDict` dictionary file. The boundary condition type is set to `fixedValue` which defines a constant inlet uniform velocity whose magnitude is case specific.
+`inlet1` and `inlet2` are defined as patch type `patch` in the `refinementSurfaces` sub-dictionary of `system/snappyHexMeshDict` dictionary file. The boundary condition type is set to `fixedValue` which defines a constant inlet uniform velocity as presented in [*Table 1*](#Table-1:-Velocity-Boundary-Conditions).
+
+#### Table 1: Velocity Boundary Conditions 
+
+Case                             | `inlet1` Velocity [m/s] | `inlet2` Velocity [m/s] |
+:-------------------------------:|:-----------------------:|:-----------------------:|
+symmetric-velocity-temperature   | 1.5                     | 1.5                     |
+asymmetric-velocity-temperature  | 1.5                     | 2.0                     |
 
 `outlet` is defined as patch type `patch` in the `refinementSurfaces` sub-dictionary of `system/snappyHexMeshDict` dictionary file. The boundary condition type is set to `pressureInletOutletVelocity` which defines a zero-gradient condition for flow out the fluid domain.
 
@@ -174,33 +180,65 @@ The IC and BC for the velocity field, [m/s], are contained in the `0.orig/U` dic
 
 #### Pressure
 
-The IC and BC for the pressure field, [Pa], are contained in the `0.orig/p` dictionary file. The fluid domain initial pressure is set by the `internalField` keyword to a uniform value of 0 Pa.
+The ICs and BCs for the pressure field, [Pa], are contained in the `0.orig/p` dictionary file. The fluid domain initial pressure is set by the `internalField` keyword to a uniform value of 0 Pa.
 
 The boundary condition type for `inlet1`, `inlet2` and `shell` is set to `zeroGradient`. The boundary condition type for `outlet` is set to `totalPressure` and the pressure magnitude is set by the `p0` keyword.
 
 #### Pseudo Hydrostatic Pressure
 
-The IC and BC for the pseudo hydrostatic pressure field, [Pa], are contained in the `0.orig/p_rgh` dictionary file. The fluid domain initial pseudo hydrostatic pressure is set by the `internalField` keyword to a uniform value of 0 Pa.
+The ICs and BCs for the pseudo hydrostatic pressure field, [Pa], are contained in the `0.orig/p_rgh` dictionary file. The fluid domain initial pseudo hydrostatic pressure is set by the `internalField` keyword to a uniform value of 0 Pa.
 
 The boundary condition type for `inlet1`, `inlet2` and `shell` is set to `zeroGradient`. The boundary condition type for `outlet` is set to `prghTotalPressure` and the pseudo hydrostatic pressure magnitude is set by the `p0` keyword.
 
 #### Temperature
 
-The IC and BC for the temperature field, [K], are contained in the `0.orig/T` dictionary file. The fluid domain initial temperature is set by the `internalField` keyword to a uniform value of 300 K.
+The ICs and BCs for the temperature field, [K], are contained in the `0.orig/T` dictionary file. The fluid domain initial temperature is set by the `internalField` keyword to a uniform value of 300 K.
 
-The boundary condition type for `outlet` and `shell` is set to `zeroGradient`. The boundary condition type for `inlet1` and `inlet2` is set to `fixedValue` which defines a constant inlet temperature whose magnitude is case specific.
+The boundary condition type for `outlet` and `shell` is set to `zeroGradient`. The boundary condition type for `inlet1` and `inlet2` is set to `fixedValue` which defines a constant inlet temperature as presented in [*Table 2*](#Table-2:-Temperature-Boundary-Conditions).
+
+#### Table 2: Temperature Boundary Conditions
+
+Case                             | `inlet1` Temperature [K] | `inlet2` Temperature [K] |
+:-------------------------------:|:------------------------:|:------------------------:|
+symmetric-velocity-temperature   | 300                      | 300                      |
+asymmetric-velocity-temperature  | 300                      | 330                      |
 
 #### Turbulent Thermal Diffusivity
 
-The IC and BC for the turbulent thermal diffusivity field, [kg/(m-s)], are contained in the `0.orig/alphat` dictionary file. The fluid domain initial turbulent thermal diffusivity is set by the `internalField` keyword to a uniform value of 0 [kg/(m-s)].
+The ICs and BCs for the turbulent thermal diffusivity field, [kg/(m-s)], are contained in the `0.orig/alphat` dictionary file. The fluid domain initial turbulent thermal diffusivity is set by the `internalField` keyword to a uniform value of 0 [kg/(m-s)].
 
 The boundary condition type for `inlet1`, `inlet2` and `outlet` is set to `calculated`. The boundary condition type for `shell` is set to `compressible::alphatJayatillekeWallFunction` which provides 
 a thermal wall function for turbulent thermal diffusivity based on the Jayatilleke model.
 
+#### Turbulent Kinematic Viscosity
 
+The ICs and BCs for the turbulent kinematic viscosity field, [m2/s], are contained in the `0.orig/nut` dictionary file. The fluid domain initial turbulent kinematic viscosity is set by the `internalField` keyword to a uniform value of 0 [m2/s].
 
+The boundary condition type for `inlet1`, `inlet2` and `outlet` is set to `calculated`. The boundary condition type for `shell` is set to `nutkWallFunction` which provides a turbulent kinematic viscosity wall function, based on turbulence kinetic energy.
 
-Discuss the `g` file
+#### Turbulent Kinetic Energy
+
+The ICs and BCs for the turbulent kinetic energy field, [m2/s2], are contained in the `0.orig/k` dictionary file. The fluid domain initial turbulent kinetic energy is set by the `internalField` keyword to a uniform value of 1 [m2/s2].
+
+The boundary condition type for `inlet1` and `inlet2` is set to `turbulentIntensityKineticEnergyInlet` and the turbulence intensity is set by the `intensity` keyword to 0.05 (5% turbulence).
+
+The boundary condition type for `outlet` is set to `inletOutlet`. The boundary condition type for `shell` is set to `kqRWallFunction` which provides a zero gradient condition for the turbulent kinetic energy at the wall.
+
+#### Turbulent Kinetic Energy Dissipation Rate
+
+The ICs and BCs for the turbulent kinetic energy dissipation rate field, [m2/s3], are contained in the `0.orig/epsilon` dictionary file. The fluid domain initial turbulent kinetic energy dissipation rate is set by the `internalField` keyword to a uniform value of 1 [m2/s3].
+
+The boundary condition type for `inlet1` and `inlet2` is set to `turbulentMixingLengthDissipationRateInlet` and the turbulent dissipation rate is based on a specified mixing length set by the `mixingLength` keyword to 0.2. The turbulent dissipation rate length scale, `mixingLength`, is equal to the diameter for `inlet1` and `inlet2` patches.
+
+The boundary condition type for `outlet` is set to `inletOutlet`. The boundary condition type for `shell` is set to `epsilonWallFunction` which provides a turbulent dissipation rate wall function condition for turbulent flow cases.
+
+### Turbulence Model
+
+The `constant/momentumTransport` dictionary file uses turbulence modelling based on the Reynolds-averaged stress (RAS) by setting `simulationType` to `RAS`. The `RAS` dictionary is used to select and enable the k-epsilon turbulence model by setting `model` to `kEpsilon` and `turbulence` to `on`, respectively. The k-epsilon model coefficients are printed to the terminal at simulation start by setting `printCoeffs` to `on`.
+
+### Gravitational Acceleration
+
+The `constant/g` dictionary file defines the magnitude and the direction of gravitational acceleration vector, [m/s2].
 
 ### Thermophysical Models and Data
 
@@ -248,16 +286,13 @@ A [Gnuplot script](water-properties/water-properties.plt) is used to calculate t
 ```
 gnuplot water-properties.plt
 ```
-The [Gnuplot script](water-properties/water-properties.plt) execution generates the water property polynomial functions shown below.
+The [Gnuplot script](water-properties/water-properties.plt) execution generates the water property polynomial functions presented in [*Table 3*](#Table-3:-Water-Property-Data-and-Polynomial-Functions).
 
-Water Property Data and Polynomial Functions  |                                              |
+#### Table 3: Water Property Data and Polynomial Functions
+Dynamic Viscosity and Specific Heat Capacity  |  Thermal Conductivity and Density            |
 :--------------------------------------------:|:--------------------------------------------:|
 <img src="water-properties/dynamic-viscosity-fit.png"> | <img src="water-properties/thermal-conductivity-fit.png"> |
 <img src="water-properties/specific-heat-capacity-fit.png"> | <img src="water-properties/density-fit.png"> |
-
-### Turbulence Model
-
-The `constant/momentumTransport` dictionary file uses turbulence modelling based on the Reynolds-averaged stress (RAS) by setting `simulationType` to `RAS`. The `RAS` dictionary is used to select and enable the k-epsilon turbulence model by setting `model` to `kEpsilon` and `turbulence` to `on`, respectively. The k-epsilon model coefficients are printed to the terminal at simulation start by setting `printCoeffs` to `on`.
 
 ## Solver
 
