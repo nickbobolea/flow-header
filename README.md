@@ -4,7 +4,7 @@
 
 This guide describes a workflow for setting up and executing OpenFOAM studies and uses the simulation of water flow through a header to illustrate the approach. The workflow is comprised of a number of steps discussed individually. The purpose of the study is to evaluate the pressure, the velocity and the temperature patterns developing in the fluid domain for different conditions.
 
-The study consists of two cases `symmetric-velocity-temperature` and `asymmetric-velocity-temperature`. The cases use the same [**Geometry**](#Geometry) and [**Mesh**](#Mesh), but employ different Initial Conditions (IC) and Boundary Conditions (BC) for the inlet patches, as presented in the [**Model**](#Model) section.
+The study consists of two cases `symmetric-velocity-temperature` and `asymmetric-velocity-temperature`. The cases use the same [**Geometry**](#Geometry) and [**Mesh**](#Mesh), but employ different Initial Conditions (IC) and Boundary Conditions (BC) for the inlet patches, as presented in the [**Model**](#Model) section.  [*Table 3*](#Table-3)
 
 ### Platform
 
