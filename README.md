@@ -300,7 +300,7 @@ The `system/controlDict` dictionary file defines the solver, the time control, t
 
 The time control uses `startTime` and `endTime` keywords to set the simulation start time and the simulation end time. The simulation time step is set by `deltaT` at a value which limits the maximum Courant number to less than 1 to ensure solution accuracy. The time step adjustment, which limits the maximum Courant number, `maxCo`, to a specified value, is disabled by setting `adjustTimeStep` to `no`.
 
-The data writing options allow the simulation data to be written at every `writeInterval` seconds of simulated time using the format set by `writeFormat` with no data compression, `writeCompression` set to `off`. The graph data format is set to `gnuplot` using the `graphFormat` keyword. The data reading option is enabled by setting `runTimeModifiable` to `true` to allow dictionaries, e.g. controlDict, to be re-read by at the beginning of each time step.
+The data writing options allow the simulation data to be written at every `writeInterval` seconds of simulated time using the format set by `writeFormat` with no data compression, `writeCompression` set to `off`. The graph data format is set to `gnuplot` using the `graphFormat` keyword. The data reading option is enabled by setting `runTimeModifiable` to `true` to allow dictionaries, e.g. `controlDict`, to be re-read at the beginning of each time step.
 
 The following run-time functions are defined:
 - *residuals*: Writes the solver residuals for `U`, `p_rgh`, `h`, `k` and `epsilon` fields at each time step to `postProcessing/residuals/0/residuals.dat` file,
@@ -314,7 +314,7 @@ The following run-time functions are defined:
     - The `inlet1` average pressure, [Pa], written to `postProcessing/pressure_drop.region1/0/surfaceFieldValue.dat` file,
     - The `outlet` average pressure, [Pa], written to `postProcessing/pressure_drop.region2/0/surfaceFieldValue.dat` file,
     - The difference between the `inlet1` average pressure and the `outlet` average pressure, [Pa],written to `postProcessing/pressure_drop/0/fieldValueDelta.dat` file.
-- *outlet_temperature*: Writes the average temperature, [K], for `outlet` at each time step to `postProcessing/outlet_temperature/0/surfaceFieldValue.dat` file.
+- *outlet_temperature*: Writes the average temperature, `T`, [K], for `outlet` at each time step to `postProcessing/outlet_temperature/0/surfaceFieldValue.dat` file.
 
 ### Numerical Scheme
 
