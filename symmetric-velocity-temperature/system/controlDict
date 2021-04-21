@@ -15,7 +15,11 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+# Solver
+
 application     buoyantPimpleFoam;
+
+# Time control
 
 startFrom       startTime;
 
@@ -26,6 +30,14 @@ stopAt          endTime;
 endTime         10.0;
 
 deltaT          0.0005;
+
+# Time step control
+
+adjustTimeStep  no;
+
+maxCo           1.2;
+
+# Data writing
 
 writeControl    runTime;
 
@@ -45,11 +57,11 @@ timePrecision   6;
 
 graphFormat     gnuplot;
 
+# Data reading
+
 runTimeModifiable true;
 
-adjustTimeStep  no;
-
-maxCo           1.2;
+# Run-time functions
 
 functions
 {
@@ -67,7 +79,7 @@ functions
 
         log                     true;
 
-        fields                  (U epsilon h k p_rgh);
+        fields                  (U p_rgh h k epsilon);
     }
 
     minmaxdomain
@@ -99,7 +111,7 @@ functions
 
         writeControl        runTime;
 
-        writeInterval       0.2;
+        writeInterval       0.25;
 
         log                 false;
     }
@@ -244,6 +256,31 @@ functions
 
         operation subtract;
 
+    }
+
+    outlet_temperature
+    {
+        type                surfaceFieldValue;
+        
+        functionObjectLibs  ("libfieldFunctionObjects.so");
+        
+        enabled             true;
+
+        writeControl        timeStep;
+
+        writeInterval       1;
+
+        log                 false;
+
+        writeFields         false;
+
+        regionType          patch;
+
+        name                outlet;
+
+        operation           average;
+
+        fields              (T);
     }
 
 

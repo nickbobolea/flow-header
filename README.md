@@ -296,7 +296,25 @@ Dynamic Viscosity and Specific Heat Capacity  |  Thermal Conductivity and Densit
 
 ### Runtime Control
 
-The `system/controlDict` dictionary file contains instructions for the case execution.
+The `system/controlDict` dictionary file defines the solver, simulation time and time step control, data I/O and run-time functions. The solver is selected using the `application` keyword which is set to `buoyantPimpleFoam`.
+
+The time control uses `startTime` and `endTime` keywords to set the simulation start and end times. The simulation time step is set by `deltaT` at a value which limits the maximum Courant number to less than 1 and ensure solution accuracy. The time step adjustment to limit the maximum Courant number, `maxCo`, to a specified value is disabled by setting `adjustTimeStep` to `no`.
+
+The data writing keywords set the simulation data to be written at every `writeInterval` seconds of simulated time using the format set by `writeFormat` with no data compression, `writeCompression` set to `off`. The graph data format is set to `gnuplot` by using the `graphFormat` keyword. Data reading is enabled by setting `runTimeModifiable` to `true` to allow dictionaries, e.g. controlDict, to be re-read by OpenFOAM at the beginning of each time step.
+
+The run-time functions are defined:
+- *residuals*: Writes the solver residuals for U, p_rgh, h, k and epsilon fields at each time step to `postProcessing/residuals/0/residuals.dat` file,
+- *minmaxdomain*: Writes the fluid domain minimum and maximum values for p, p_rgh, U, k, epsilon and T at each time step to `postProcessing/minmaxdomain/0/fieldMinMax.dat` file,
+- *yPlus*: Writes the fluid domain y+ values at every `writeInterval` seconds of simulated time to `postProcessing/yplus/0/yPlus.dat` file,
+- *inlet1_massflow*: Writes the mass flow rate, [kg/s], for `inlet1` at each time step to `postProcessing/inlet1_massflow/0/surfaceFieldValue.dat` file,
+- *inlet2_massflow*: Writes the mass flow rate, [kg/s], for `inlet2` at each time step to `postProcessing/inlet2_massflow/0/surfaceFieldValue.dat` file,
+- *outlet_massflow*: Writes the mass flow rate, [kg/s], for `outlet` at each time step to `postProcessing/outlet_massflow/0/surfaceFieldValue.dat` file,
+- *probes_online*: Writes the U, p, T and p_rgh values at selected locations in the fluid domain at each time step to `postProcessing/probes_online/0/U, p, T and p_rgh` files,
+- *pressure_drop*: Writes the difference between the `inlet1` average pressure and the `outlet` average pressure at each time step. This function generates the following information:
+    - The `inlet1` average pressure, [Pa], written to `postProcessing/pressure_drop.region1/0/surfaceFieldValue.dat` file,
+    - The `outlet` average pressure, [Pa], written to `postProcessing/pressure_drop.region2/0/surfaceFieldValue.dat` file,
+    - The difference between the `inlet1` average pressure and the `outlet` average pressure, [Pa],written to `postProcessing/pressure_drop/0/fieldValueDelta.dat` file.
+- *outlet_temperature*: Writes the average temperature, [K], for `outlet` at each time step to `postProcessing/outlet_temperature/0/surfaceFieldValue.dat` file.
 
 ### Numerical Scheme
 
