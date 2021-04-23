@@ -258,11 +258,11 @@ The equation of state submodel, `equationOfState`, is set to `icoPolynomial` (in
 
 The specie submodel, `specie`, is set to `specie`.
 
-The energy submodel, `energy`, is set to `sensibleEnthalpy` as the energy formulation used in the solver solution.
+The energy submodel, `energy`, is set to `sensibleInternalEnergy` as the energy formulation used in the solver solution.
 
 #### Thermophysical Properties Data
 
-The thermophysical properties data for the thermophysical submodels is contained in the specie dictionary named `water`.
+The thermophysical properties data for the thermophysical submodels is contained in the specie dictionary named `mixture`.
 
 The `specie` sub-dictionary contains the molecular composition for each mixture constituent. As the mixture submodel is set to `pureMixture`, the `specie` dictionary contains only the water molecular weight, `molWeight`, [g/mol].
 
@@ -298,31 +298,57 @@ Dynamic Viscosity and Specific Heat Capacity  |  Thermal Conductivity and Densit
 
 The `system/controlDict` dictionary file defines the solver, the time control, the data I/O and the run-time functions. The solver is selected using the `application` keyword which is set to `buoyantPimpleFoam`.
 
-The time control uses `startTime` and `endTime` keywords to set the simulation start time and the simulation end time. The simulation time step is set by `deltaT` at a value which limits the maximum Courant number to less than 1 to ensure solution accuracy. The time step adjustment, which limits the maximum Courant number, `maxCo`, to a specified value, is disabled by setting `adjustTimeStep` to `no`.
+The time control uses `startTime` and `endTime` keywords to set the simulation start time and the simulation end time. The simulation time step, `deltaT`, is controlled by run-time function `deltaT_control`. The automatic time step adjustment, which limits the maximum Courant number, `maxCo`, to a specified value, is disabled by setting `adjustTimeStep` to `no`.
 
 The data writing options allow the simulation data to be written at every `writeInterval` seconds of simulated time using the format set by `writeFormat` with no data compression, `writeCompression` set to `off`. The graph data format is set to `gnuplot` using the `graphFormat` keyword. The data reading option is enabled by setting `runTimeModifiable` to `true` to allow dictionaries, e.g. `controlDict`, to be re-read at the beginning of each time step.
 
 The following run-time functions are defined:
-- *residuals*: Writes the solver residuals for `U`, `p_rgh`, `h`, `k` and `epsilon` fields at each time step to `postProcessing/residuals/0/residuals.dat` file,
+- *residuals*: Writes the solver residuals for `U`, `p_rgh`, `e`, `k` and `epsilon` fields at each time step to `postProcessing/residuals/0/residuals.dat` file,
+
 - *minmaxdomain*: Writes the fluid domain minimum and maximum values for `p`, `p_rgh`, `U`, `k`, `epsilon` and `T` at each time step to `postProcessing/minmaxdomain/0/fieldMinMax.dat` file,
+
 - *yPlus*: Writes the fluid domain y+ values at every `writeInterval` seconds of simulated time to `postProcessing/yplus/0/yPlus.dat` file,
+
 - *inlet1_massflow*: Writes the mass flow rate, `phi`, [kg/s], for `inlet1` at each time step to `postProcessing/inlet1_massflow/0/surfaceFieldValue.dat` file,
+
 - *inlet2_massflow*: Writes the mass flow rate, `phi`, [kg/s], for `inlet2` at each time step to `postProcessing/inlet2_massflow/0/surfaceFieldValue.dat` file,
+
 - *outlet_massflow*: Writes the mass flow rate, `phi`, [kg/s], for `outlet` at each time step to `postProcessing/outlet_massflow/0/surfaceFieldValue.dat` file,
+
 - *probes_online*: Writes the `U`, `p`, `T` and `p_rgh` values at selected locations in the fluid domain at each time step to `postProcessing/probes_online/0/U, p, T and p_rgh` files,
+
 - *pressure_drop*: Writes the difference between the `inlet1` average pressure and the `outlet` average pressure at each time step. This function generates the following information:
     - The `inlet1` average pressure, [Pa], written to `postProcessing/pressure_drop.region1/0/surfaceFieldValue.dat` file,
     - The `outlet` average pressure, [Pa], written to `postProcessing/pressure_drop.region2/0/surfaceFieldValue.dat` file,
     - The difference between the `inlet1` average pressure and the `outlet` average pressure, [Pa],written to `postProcessing/pressure_drop/0/fieldValueDelta.dat` file.
-- *outlet_temperature*: Writes the average temperature, `T`, [K], for `outlet` at each time step to `postProcessing/outlet_temperature/0/surfaceFieldValue.dat` file.
 
-### Numerical Scheme
+- *outlet_temperature*: Writes the average temperature, `T`, [K], for `outlet` at each time step to `postProcessing/outlet_temperature/0/surfaceFieldValue.dat` file,
 
-The `system/fvSchemes` dictionary file contains instructions for the discretization schemes that are used for the different terms in the equations.
+- *deltaT_control*: Controls the simulation time step, `deltaT`, by using the small time step, defined in the `system/controlDict-small-deltaT` dictionary file, at the start of the simulation and a large time step, defined in the `system/controlDict-large-deltaT` dictionary file, for the reminder of the simulation. This approach avoids solver failures at the simulation start and reduces the simulation execution time while keeping the Courant number within a resonable range. 
+
+### Numerical Schemes
+
+The `system/fvSchemes` dictionary file sets the numerical schemes for equation terms that are calculated during a simulation. The set of terms, for which numerical schemes must be specified, are subdivided within the `system/fvSchemes` dictionary file into the sub-dictionaries described below.
+
+- `ddtSchemes`: The `ddtSchemes` sub-dictionary specifies the time scheme for the first time derivative. The `CrankNicolson` discretization scheme is selected and the blending coefficient is used to balance scheme accuracy and stability. A blending coefficient of 0 is equivalent to running a pure Euler scheme (robust, but first order accurate), while a blending coefficient of 1 uses use a pure Crank-Nicolson scheme (second order accurate, but oscillatory).
+
+- `gradSchemes`: The `gradSchemes` sub-dictionary specifies the `Gauss` option for treatment of the standard finite volume discretization of Gaussian integration. The option requires the use of `linear` interpolation of values from cell centers to face centers. To guarantee boundedness and improve stability, the `cellLimited` gradient limiter scheme and a limiting coefficient are used to limit the gradient such that, when cell values are extrapolated to faces using the calculated gradient, the face values do not fall outside the bounds of values in surrounding cells.
+
+- `divSchemes`: The `divSchemes` sub-dictionary defines the treatment of advective divergence terms. The `Gauss` integration scheme using the flux `phi` is employed. The interpolation of the advected field to the cell faces uses the `linearUpwindV`, `linearUpwind` and `linear` schemes.
+
+- `laplacianSchemes`: The `laplacianSchemes` sub-dictionary uses the `Gauss` discretization scheme. The `Gauss` discretization scheme requires the selection of:
+    - An interpolation scheme for the diffusion coefficients. The selected interpolation scheme is `linear`.
+    - A surface normal gradient scheme. The selected surface normal gradient scheme is `limited`. The `limited` scheme is second order accurate, bounded (depending on the quality of the mesh), with non-orthogonal corrections. Since the maximum mesh non-orthogonality reported in the `snappyHexMesh` mesh quality log file is less than 70, the blending factor for the `limited` scheme is set to `1`.
+
+- `interpolationSchemes`: The `interpolationSchemes` sub-dictionary sets the `linear` method to be used for interpolation of values from cell centers to face centers.
+
+- `snGradSchemes`: The `snGradSchemes` sub-dictionary contains surface normal gradient terms. It uses the same method as the one chosen for the Laplacian terms in the `laplacianSchemes` sub-dictionary, the `limited` scheme with the blending factor set to `1`.
 
 ### Solution and Algorithm Control
 
-The `system/fvSolution` dictionary file contains the equation solvers, tolerances and algorithms.  
+The `system/fvSolution` dictionary file defines the equation solvers, tolerances and algorithms and it is structured into the sub-dictionaries discussed below.
+
+- `solvers`: The `solvers` sub-dictionary specifies each linear-solver (the method of number-crunching to solve a matrix equation) that is used for each discretized equation.
 
 
 ## Execution

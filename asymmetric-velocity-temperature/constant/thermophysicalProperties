@@ -26,7 +26,7 @@ thermoType
     energy          sensibleEnthalpy;
 }
 
-water
+mixture
 {
     specie
     {
@@ -48,7 +48,7 @@ water
 
     equationOfState
     {
-        rhoCoeffs<8>    (2.132169e+2 6.963626     -1.942936e-2 1.640309e-5 0 0 0 0 0);
+        rhoCoeffs<8>    (2.132169e+2 6.963626     -1.942936e-2 1.640309e-5 0 0 0 0);
     }
 
 }
