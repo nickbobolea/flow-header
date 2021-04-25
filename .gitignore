@@ -22,6 +22,7 @@ log.*
 
 # Timestep directories
 **/0.*
+**/0/
 **/[1-9]*
 
 # Fields that must get ignored
@@ -50,7 +51,6 @@ log.*
 # Darwin*
 
 # Exclude important folders and files from the ignore list
-!**/0/
 !**/0.orig/
 !**/system/
 !.gitignore
