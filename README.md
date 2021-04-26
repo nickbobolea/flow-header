@@ -363,7 +363,38 @@ The `system/fvSolution` dictionary file defines the equation solvers, tolerances
 
 ## Execution
 
-The `0.orig` folder is copied to `0` folder.
+The Linux `cp` command is executed in the case folder to copy the `0.orig` folder (ICs and BCs) to the to `0` folder prior to solver execution using:
+
+```
+cp -r 0.orig 0
+```
+
+### Domain Decomposition
+
+The `decomposePar` utility is used to decompose the fluid domain into sub-domains, allocated to separate processors, to allow for parallel mesh generation or solver execution. The `system/decomposeParDict` dictionary file contains the `decomposePar` utility parameters. The mesh is decomposed into 8 sub-domains by setting `numberOfSubdomains` to 8. The decomposition method is set to `simple` using the `method` parameter. For the `simple` method, the `n` parameter in the `simpleCoeffs` dictionary decomposes the mesh into 2 sub-domains along the x, y and z directions, respectively. The `decomposePar` utility is executed in the case folder using:
+
+```
+decomposePar | tee log.09.decomposeParSolver
+```
+
+The execution of `decomposePar` utility creates a `processorX/` folder for each processor. The folder contains the sub-domain mesh and initial field values assigned to that processor.
+
+### Solver Execution
+
+The `buoyantPimpleFoam` is executed in parallel in the case folder using:
+
+```
+mpirun -np 8 buoyantPimpleFoam -parallel | tee log.10.buoyantPimpleFoam
+```
+
+### Solver Solution Reconstruction
+
+The `reconstructParMesh` utility reads the sub-domain (processor) `buoyantPimpleFoam` solution and creates the time-dependent solution folders in the case folder. The `reconstructParMesh` utility is executed in the case folder using:
+
+```
+reconstructPar | tee log.11.reconstructPar
+```
+
 
 ## Results
 
