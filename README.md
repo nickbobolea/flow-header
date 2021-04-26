@@ -348,8 +348,18 @@ The `system/fvSchemes` dictionary file sets the numerical schemes for equation t
 
 The `system/fvSolution` dictionary file defines the equation solvers, tolerances and algorithms and it is structured into the sub-dictionaries discussed below.
 
-- `solvers`: The `solvers` sub-dictionary specifies each linear-solver (the method of number-crunching to solve a matrix equation) that is used for each discretized equation.
+- `solvers`: The `solvers` sub-dictionary specifies each linear-solver (the method of number-crunching to solve a matrix equation) that is used for each discretized equation. The `GAMG` (generalised geometric-algebraic multi-grid) solver and the `GaussSeidel` smoother are used for all fields. The solver tolerance represent the level at which the field equation residual (the measure of solution error) is small enough that the solution can be deemed sufficiently accurate . The solver stops if *any* one of the following conditions are reached:
+    - The residual falls below the solver `tolerance` tolerance,
+    - The ratio of current to initial residuals (at the current time step) falls below the solver relative tolerance `relTol`,
+    - The number of iterations exceeds a maximum number of iterations `maxIter`. The maximum number of iterations is not set explicitly and uses the solver default value.
 
+- `PIMPLE`: The `PIMPLE` sub-dictionary defines the parameters used by the iterative algorithm for coupling the solution of mass, momentum and energy conservation. The `PIMPLE` algorithm is a combination of the `PISO` (pressure-implicit split-operator) and the `SIMPLE` (semi-implicit method for pressure-linked equations) algorithms and it is used for transient problems. The `PIMPLE` parameters are described below.
+    - `consistent`: The consistent formulation of the `SIMPLE` algorithm, `SIMPLEC`, is used by setting the `consistent` keyword to `yes`. The `SIMPLEC` formulation for the pressure-velocity coupling method needs only a small amount of under-relaxation for velocity and other transport equations and does not need to use any relaxation on pressure. This results typically in more robust solution and faster convergence.
+    - `momentumPredictor`: The `momentumPredictor` is set to `yes` to enable the momentum predictor step which helps in stabilizing the solution as better approximations for the velocity field are computed. Enabling this parameter is recommended for highly convective flows and requires the definition of linear solvers for `Final` variables.
+    - `nOuterCorrectors`: The `nOuterCorrectors` enables the looping over the entire system of equations within on time step, representing the total number of times the system is solved. If the `nOuterCorrectors` is set to 1, the `PISO` algorithm is used. Using more outer correctors results in better stability, especially when using large time-steps (Courant number higher than 1), but it will highly increase the computational cost.
+    - `nCorrectors`: The `nCorrectors` sets the number of times the algorithm solves the pressure equation and momentum corrector in each time step.
+    - `nNonOrthogonalCorrectors`: The `nNonOrthogonalCorrectors` sets the number of repeated solutions of the pressure equation, used to update the explicit non-orthogonal correction.Increasing the number of `nNonOrthogonalCorrectors` corrections will add more stability but at a higher computational cost.
+    - `residualControl`: The `residualControl` sets the the convergence controls based on residuals of fields from one time step to the next.
 
 ## Execution
 

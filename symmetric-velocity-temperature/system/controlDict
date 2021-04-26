@@ -29,7 +29,7 @@ stopAt          endTime;
 
 endTime         10.0;
 
-deltaT          0.0003;
+deltaT          0.0005;
 
 // Time step control
 
@@ -301,7 +301,6 @@ functions
                 (0.01       "$FOAM_CASE/system/controlDict-large-deltaT")
             );
     }
-
 
 };
 
