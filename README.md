@@ -358,7 +358,7 @@ The `system/fvSolution` dictionary file defines the equation solvers, tolerances
     - `momentumPredictor`: The `momentumPredictor` is set to `yes` to enable the momentum predictor step which helps in stabilizing the solution as better approximations for the velocity field are computed. Enabling this parameter is recommended for highly convective flows and requires the definition of linear solvers for `Final` variables.
     - `nOuterCorrectors`: The `nOuterCorrectors` enables the looping over the entire system of equations within on time step and represents the total number of times the system is solved. If the `nOuterCorrectors` is set to 1, the `PISO` algorithm is used. Using more outer correctors results in better stability, especially when using large time-steps (Courant number higher than 1), but at a higher computational cost.
     - `nCorrectors`: The `nCorrectors` sets the number of times the algorithm solves the pressure equation and momentum corrector in each time step.
-    - `nNonOrthogonalCorrectors`: The `nNonOrthogonalCorrectors` sets the number of repeated solutions of the pressure equation, used to update the explicit non-orthogonal correction. Increasing the number of `nNonOrthogonalCorrectors` corrections will add more stability but at a higher computational cost.
+    - `nNonOrthogonalCorrectors`: The `nNonOrthogonalCorrectors` sets the number of repeated solutions of the pressure equation, used to update the explicit non-orthogonal correction. Increasing the number of `nNonOrthogonalCorrectors` corrections adds more stability but at a higher computational cost.
     - `residualControl`: The `residualControl` sets the the convergence controls based on residuals of fields from one time step to the next.
 
 ## Execution
