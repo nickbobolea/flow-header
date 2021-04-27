@@ -395,6 +395,8 @@ The `reconstructParMesh` utility reads the sub-domain (processor) `buoyantPimple
 reconstructPar | tee log.11.reconstructPar
 ```
 
-
 ## Results
 
+Solver execution plots
+
+[Outlet Temperature](http://htmlpreview.github.io/?https://github.com/nickbobolea/flow-header/blob/main/visualizations/01-outlet-temperature.html)
