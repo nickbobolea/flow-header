@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 cd ${0%/*} || exit 1    # Run from this directory
 
 # Remove "0" folder (ICs and BCs)
@@ -14,6 +14,8 @@ rm -rf constant/extendedFeatureEdgeMesh > /dev/null 2>&1
 # Remove mesh / solver execution folders
 # Remove partition folders
 rm -rf processor* > /dev/null 2>&1
+# Remove solver folders
+rm -rf 0 0.[0-9]* [1-9]*
 # Remove postProcessing
 rm -rf postProcessing > /dev/null 2>&1
 # Remove log files

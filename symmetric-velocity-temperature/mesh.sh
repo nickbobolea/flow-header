@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 cd ${0%/*} || exit 1    # Run from this directory
 
 # Execute blockMesh
@@ -20,7 +20,7 @@ start_time="$(date -u +%s.%N)"
 surfaceFeatures | tee log.03.surfaceFeatures
 end_time="$(date -u +%s.%N)"
 elapsed="$(bc <<<"$end_time-$start_time")"
-echo "Execute edge extraction: $elapsed seconds" >> log.mesh
+echo "Execute geometry edge extraction: $elapsed seconds" >> log.mesh
 
 # Execute mesh partition
 start_time="$(date -u +%s.%N)"
@@ -58,7 +58,7 @@ start_time="$(date -u +%s.%N)"
 renumberMesh -overwrite | tee log.08.renumberMesh
 end_time="$(date -u +%s.%N)"
 elapsed="$(bc <<<"$end_time-$start_time")"
-echo "Execute solver partition: $elapsed seconds" > log.mesh
+echo "Renumber mesh: $elapsed seconds" >> log.mesh
 
 # Optional - Create VTK files to check mesh and problem setup
 # start_time="$(date -u +%s.%N)"

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 cd ${0%/*} || exit 1    # Run from this directory
 
 # Copy 0 boundary conditions
@@ -30,10 +30,13 @@ echo "Execute solver: $elapsed seconds" >> log.solve
 # Reconstruct solver solution
 start_time="$(date -u +%s.%N)"
 reconstructPar | tee log.11.reconstructPar
-# reconstructPar -fields '(epsilon k p phi p_rgh T U yPlus)' | tee log.11.reconstructPar
+# reconstructPar -fields '(p p_rgh T U k epsilon phi yPlus)' | tee log.11.reconstructPar
 end_time="$(date -u +%s.%N)"
 elapsed="$(bc <<<"$end_time-$start_time")"
 echo "Reconstruct solver solution: $elapsed seconds" >> log.solve
+
+# Remove solver partition folders
+rm -rf processor* > /dev/null 2>&1
 
 # Optional - Post-process results
 # buoyantPimpleFoam -postProcess -latestTime -dict system/controlDict | tee log.13.postProcess

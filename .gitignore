@@ -43,6 +43,9 @@ log.*
 **/forces/
 **/postProcessing/
 
+# Jupyter Notebook
+**/.ipynb_checkpoints
+
 # Needed when C++ code is built using the OpenFOAM library, since it does not
 # use a "normal" build tool (make, cmake, ..).
 # lnInclude
@@ -53,5 +56,6 @@ log.*
 # Exclude important folders and files from the ignore list
 !**/0.orig/
 !**/system/
+!**/visualizations/
 !.gitignore
 
