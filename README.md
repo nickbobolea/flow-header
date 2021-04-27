@@ -399,4 +399,4 @@ reconstructPar | tee log.11.reconstructPar
 
 Solver execution plots
 
-[Outlet Temperature](http://htmlpreview.github.io/?https://github.com/nickbobolea/flow-header/blob/main/visualizations/01-outlet-temperature.html)
+[JupyterLab Notebook](http://htmlpreview.github.io/?https://github.com/nickbobolea/flow-header/blob/main/visualizations/flow-header.html)
