@@ -14277,7 +14277,6 @@ a.anchor-link {
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">pandas</span>
 <span class="kn">import</span> <span class="nn">plotly</span>
-<span class="kn">import</span> <span class="nn">plotly.express</span> <span class="k">as</span> <span class="nn">px</span>
 <span class="kn">import</span> <span class="nn">plotly.graph_objects</span> <span class="k">as</span> <span class="nn">go</span>
 <span class="kn">import</span> <span class="nn">IPython</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
@@ -14320,7 +14319,7 @@ plotly package version: 4.14.3.
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Define-and-Load-Data-Sources">Define and Load Data Sources<a class="anchor-link" href="#Define-and-Load-Data-Sources">&#182;</a></h3><p>The data files from the case specific <code>postProcessing</code> folder are loaded into pandas dataframes.</p>
+<h3 id="Read-Run-Time-Simulation-Data">Read Run-Time Simulation Data<a class="anchor-link" href="#Read-Run-Time-Simulation-Data">&#182;</a></h3><p>The data files from the case <code>postProcessing</code> folder are loaded into pandas dataframes.</p>
 
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
@@ -14330,7 +14329,6 @@ plotly package version: 4.14.3.
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Define data file information</span>
-<span class="c1"># data_file_info = OrderedDict()</span>
 <span class="n">data_file_info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;inlet1_massflow&#39;</span><span class="p">:[</span><span class="s2">&quot;Time [s]&quot;</span><span class="p">,</span> <span class="s2">&quot;inlet1 Mass Flow [kg/s]&quot;</span><span class="p">],</span>
                   <span class="s1">&#39;inlet2_massflow&#39;</span><span class="p">:[</span><span class="s2">&quot;Time [s]&quot;</span><span class="p">,</span> <span class="s2">&quot;inlet2 Mass Flow [kg/s]&quot;</span><span class="p">],</span>
                   <span class="s1">&#39;outlet_massflow&#39;</span><span class="p">:[</span><span class="s2">&quot;Time [s]&quot;</span><span class="p">,</span> <span class="s2">&quot;outlet Mass Flow [kg/s]&quot;</span><span class="p">],</span>
@@ -14338,12 +14336,15 @@ plotly package version: 4.14.3.
                   <span class="s1">&#39;residuals&#39;</span><span class="p">:[</span><span class="s2">&quot;Time [s]&quot;</span><span class="p">,</span> <span class="s2">&quot;Ux&quot;</span><span class="p">,</span> <span class="s2">&quot;Uy&quot;</span><span class="p">,</span><span class="s2">&quot;Uz&quot;</span><span class="p">,</span><span class="s2">&quot;p_rgh&quot;</span><span class="p">,</span><span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;epsilon&quot;</span><span class="p">],</span>
                   <span class="s1">&#39;pressure_drop&#39;</span><span class="p">:[</span><span class="s2">&quot;Time [s]&quot;</span><span class="p">,</span> <span class="s2">&quot;inlet1-outlet Pressure Drop [Pa]&quot;</span><span class="p">]}</span>
 
-<span class="c1"># Create simulation data dictionary</span>
-<span class="c1"># simulation_data = OrderedDict()</span>
+<span class="c1"># Create simulation_data dictionary</span>
+<span class="c1"># key [string]: case-name:data_file_info.key (e.g. symmetric-velocity-temperature:inlet1_massflow)</span>
+<span class="c1"># value [pandas dataframe]: data file content</span>
 <span class="n">simulation_data</span> <span class="o">=</span> <span class="p">{}</span>
+
 <span class="c1"># Create case list</span>
 <span class="n">case_list</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="c1"># Traverse simulation repository, po;ulate case list and load case data</span>
+
+<span class="c1"># Traverse simulation repository, populate case list and load case data</span>
 <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="s2">&quot;../&quot;</span><span class="p">,</span> <span class="n">topdown</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">data_source</span><span class="p">,</span> <span class="n">source_headers</span> <span class="ow">in</span> <span class="n">data_file_info</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -14367,26 +14368,32 @@ plotly package version: 4.14.3.
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Create-Plots">Create Plots<a class="anchor-link" href="#Create-Plots">&#182;</a></h3><p>Create interactive plots for the simulation data.</p>
+<h3 id="Create-Interactive-Plots">Create Interactive Plots<a class="anchor-link" href="#Create-Interactive-Plots">&#182;</a></h3><p>The run-time simulation parameter plots are created using Plotly, exported to a combined html file and displayed using IPython.</p>
 
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Set figure dimensions for inline display</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Set figure dimensions for IPython display</span>
 <span class="n">figure_width</span> <span class="o">=</span> <span class="mi">1000</span>
 <span class="n">figure_height</span> <span class="o">=</span> <span class="mi">900</span>
+
 <span class="c1"># Initialize figure number</span>
 <span class="n">figure_number</span> <span class="o">=</span> <span class="mi">1</span>
+
 <span class="c1"># Initialize figure list</span>
 <span class="n">figure_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># Loop over simulation data</span>
 <span class="k">for</span> <span class="n">data_key</span><span class="p">,</span> <span class="n">data_value</span> <span class="ow">in</span> <span class="n">simulation_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="c1"># Set figure title</span>
+    <span class="c1"># Get case name</span>
     <span class="n">case_name</span> <span class="o">=</span> <span class="n">data_key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># Get file name</span>
     <span class="n">file_name</span> <span class="o">=</span> <span class="n">data_key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1"># Set figure title</span>
     <span class="n">figure_title</span> <span class="o">=</span> <span class="s2">&quot;Figure &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">figure_number</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;: Case &quot;</span> <span class="o">+</span> <span class="n">case_name</span> <span class="o">+</span> <span class="s2">&quot; - &quot;</span> <span class="o">+</span> <span class="n">file_name</span>
     <span class="c1"># Get data into a dataframe</span>
     <span class="n">data_df</span> <span class="o">=</span> <span class="n">data_value</span>
@@ -14405,7 +14412,7 @@ plotly package version: 4.14.3.
                 <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;lines&#39;</span><span class="p">,</span>
                 <span class="n">name</span> <span class="o">=</span> <span class="n">column</span><span class="p">)</span>
         <span class="p">)</span>
-
+    <span class="c1"># Set y axis type and title</span>
     <span class="k">if</span> <span class="n">file_name</span> <span class="o">==</span> <span class="s1">&#39;residuals&#39;</span><span class="p">:</span>
         <span class="n">yaxis_type_value</span> <span class="o">=</span> <span class="s1">&#39;log&#39;</span>
         <span class="n">yaxis_title_value</span> <span class="o">=</span> <span class="s1">&#39;Residuals&#39;</span>
@@ -14427,11 +14434,11 @@ plotly package version: 4.14.3.
         <span class="nb">type</span><span class="o">=</span><span class="n">yaxis_type_value</span>
     <span class="p">)</span>
 
-    <span class="n">figure_html_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">figure_number</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">case_name</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">file_name</span> <span class="o">+</span> <span class="s2">&quot;.html&quot;</span>
+    <span class="c1"># Add figure to list of figures</span>
     <span class="n">figure_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
     <span class="n">figure_number</span> <span class="o">+=</span> <span class="mi">1</span>
 
-<span class="c1"># Write the all simulation plots to a single html file</span>
+<span class="c1"># Write all simulation plots to a single html file</span>
 <span class="n">plot_package</span> <span class="o">=</span> <span class="s1">&#39;flow-header-plots.html&#39;</span>
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">plot_package</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">figure</span> <span class="ow">in</span> <span class="n">figure_list</span><span class="p">:</span>
@@ -14454,7 +14461,7 @@ plotly package version: 4.14.3.
 <div class="jp-OutputArea-child">
 
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[5]:</div>
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[3]:</div>
 
 
 
