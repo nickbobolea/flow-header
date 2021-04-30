@@ -45,6 +45,8 @@ log.*
 
 # Jupyter Notebook
 **/.ipynb_checkpoints
+# VSCode
+**/.vscode
 
 # Needed when C++ code is built using the OpenFOAM library, since it does not
 # use a "normal" build tool (make, cmake, ..).
